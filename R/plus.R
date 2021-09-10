@@ -23,6 +23,10 @@ plus <-  function(v1,v2){
   if(is.null(v1)){ return(v2)}
   if(is.null(v2)){ return(v1)}
 
-  tidygraph::graph_join(v1, v2)
+suppressMessages(
+  g <- tidygraph::graph_join(v1, v2)
+)
+
+  g
 
 }

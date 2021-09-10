@@ -20,17 +20,21 @@ Ralget creates algebraic graphs in R.
 
 ## Installation
 You can install the evelopment version from [GitHub](https://github.com/) with:
+You can install the evelopment version from [GitHub](https://github.com/) with:
 ``` r
+# install.packages("devtools")
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
 ## Example
 This is a basic example which shows you how to solve a common problem:
-```{r example,echo = FALSE, message=FALSE, warning=FALSE}
+```{r example,echo = FALSE, message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
-library(visNetwork)
+library(patchwork)
+devtools::install(); 3
+#devtools::install(); 3
 library(ralget)
 ```
 
@@ -53,32 +57,30 @@ p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r");
 p * q + s
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE,fig.height=3, fig.width=3}
-(p * q + s) %>% plot()
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE,fig.height=7, fig.width=7}
+(p * q + s) %>% plot() + 
+  ggtitle(expression("p * q + s")) +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
-```{r fig.height=5, fig.width=5}
+```{r fig.height=7, fig.width=20}
 g2 <- q*s+q*r
 g1 <- p*q+s
 gg <- (g1+g2)
-library("patchwork")
-
- (plot(g1) +  ggtitle('Plot 4') )
-
-  
-  plot(g2) + plot(gg)
-
-bind_graphs(
-  g1 %>% mutate(graph_name = "g1"),
-  g2%>% mutate(graph_name = "g2"),
-  gg %>% mutate(graph_name = "g1 + g2")
-) %>% 
-  plot() + facet_wrap(~graph_name)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=7, fig.width=20}
+format <- theme(plot.title = element_text(hjust = 0.5)) +  theme(panel.background = element_rect(fill = rgb(.95,.95,.95,1),color = NA)) 
+(plot(g1) + ggtitle("g1") + format) +
+(plot(g2) + ggtitle("g2") + format) + 
+(plot(gg) + ggtitle("g1 + g2") + format) 
 
 ```
 
-```{r fig.height=5, fig.width=5}
-g3 <- s*r
-(g1*g3) %>% plot(loops = T) 
-```
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=7, fig.width=20}
+ g3 <- s*r
+gg1 <- g1 * g3
+(plot(g1) + ggtitle("g1") + format) +
+(plot(g3) + ggtitle("g3") + format) + 
+(plot(gg1, loops = T) + ggtitle("g1 * g3") + format) 
+ ```

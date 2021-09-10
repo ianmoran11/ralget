@@ -1,13 +1,11 @@
 rm(list = ls())
-
-renv::init()
-renv::restore()
 devtools::document()
 devtools::build()
 devtools::install()
 
-
+install.packages("devtools")
+library(devtools)
+devtools::document()
 remove.packages("ralget")
 library(ralget)
-
 

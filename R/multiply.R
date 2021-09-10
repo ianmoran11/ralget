@@ -47,7 +47,9 @@ multiply <- function(v1, v2){
 
   new_edges <- tidyr::crossing(from = v1_names, to = v2_names)
 
+suppressMessages(
   bound <-   tidygraph::graph_join(v1,v2)
+)
 
   bound_edge_tbl <-
     activate(bound,"edges") %>%
@@ -57,7 +59,9 @@ multiply <- function(v1, v2){
     select(from = from_name, to = to_name)
 
 
+suppressMessages(
   edges_to_add <- anti_join(new_edges,bound_edge_tbl)
+)
 
 
   if(nrow(edges_to_add)>0){
