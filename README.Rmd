@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 # ralget
 Ralget creates algebraic graphs in R. 
 
-## Installation
+### Installation
 You can install the evelopment version from [GitHub](https://github.com/) with:
 You can install the evelopment version from [GitHub](https://github.com/) with:
 ``` r
@@ -26,19 +26,17 @@ You can install the evelopment version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
-## Example
-This is a basic example which shows you how to solve a common problem:
 ```{r example,echo = FALSE, message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
 library(patchwork)
+library(magrittr)
 devtools::install(); 3
 #devtools::install(); 3
 library(ralget)
 ```
 
-# The building blocks of charts 
 ### Vertices 
 Vertices are created with the `v()` function, which takes a name and list of attributes associated with the vertex. 
 This creates a ralget/tidygraph object:
@@ -49,8 +47,85 @@ v("x", Latitude=  78.26077, Longitude=  -94.11077)
 ### Combining Vertices 
 
 Take the following vertices:
-```{r echo=FALSE}
+```{r echo=TRUE }
 p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r"); 
+```
+
+The following expressions...
+```{r echo=TRUE, results = "hide" }
+g1 <- p*q+s
+g2 <- q*s+q*r
+g3 <- s*r
+```
+... produce the following graphs:
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=12.5}
+g1 <- p*q+s
+g2 <- q*s+q*r
+g3 <- s*r
+gg <- (g1+g2)
+
+p1 <-
+g1 %>% 
+    ggraph()  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1 = p * q + s") + format
+
+p2 <-
+g2 %>% 
+    ggraph()  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g2 = q * s + q * r") + format
+
+p3 <-
+g3 %>% 
+    ggraph()  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g3 = s * r") + format 
+
+
+p1 + p2 + p3
 ```
 
 #### Overlaying graphs ( + )  
@@ -58,26 +133,246 @@ p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r");
 The `+` operator overlays graphs.
 
 
-```{r fig.height=7, fig.width=20}
-g2 <- q*s+q*r
-g1 <- p*q+s
-gg <- (g1+g2)
+```{r echo=FALSE, results = "hide" }
+gs <- (g1+g2)
 ```
-```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=7, fig.width=20}
+
+```{r echo=TRUE, results = "hide" }
+g1 + g2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=12.5}
 format <- theme(plot.title = element_text(hjust = 0.5)) +  theme(panel.background = element_rect(fill = rgb(.95,.95,.95,1),color = NA)) 
-(plot(g1) + ggtitle("g1") + format) +
-(plot(g2) + ggtitle("g2") + format) + 
-(plot(gg) + ggtitle("g1 + g2") + format) 
+
+p1 <-
+g1 %>%
+    ggraph(data.frame(x = c(1,2,2), y = c(2,2,1)))  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    # geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1") + format
+
+
+
+p2 <-
+g2 %>%
+    ggraph(data.frame(x = c(2,2,3), y = c(2,1,2)))  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    # geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g2") + format
+
+
+p3 <-
+gs %>%
+    ggraph(data.frame(x = c(1,2,2,3), y = c(2,2,1,2)))  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    # geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1 + g2") + format
+
+p1 + p2 + p3
 
 ```
 
 #### Connecting graphs ( * )  
 
 The `*` operator creates a link from each vertex on the right to each vertex on the left. 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=7, fig.width=20}
- g3 <- s*r
-gg1 <- g1 * g3
-(plot(g1) + ggtitle("g1") + format) +
-(plot(g3) + ggtitle("g3") + format) + 
-(plot(gg1, loops = T) + ggtitle("g1 * g3") + format) 
- ```
+```{r echo=FALSE, results = "hide" }
+gp <- (g1*g3)
+```
+
+```{r echo=TRUE, results = "hide" }
+g1 * g3
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=12.5}
+format <- theme(plot.title = element_text(hjust = 0.5)) +  theme(panel.background = element_rect(fill = rgb(.95,.95,.95,1),color = NA)) 
+p1 <-
+g1 %>%
+    ggraph(data.frame(x = c(1,2,2), y = c(2,2,1)))  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    # geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1") + format
+
+
+
+p2 <-
+g3 %>%
+    ggraph(data.frame(x = c(2,3), y = c(1,2)))  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    # geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g2") + format
+
+
+p3 <-
+gp %>%
+    ggraph(data.frame(x = c(1,2,2,3), y = c(2,1.90,1,2)))  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1 * g2") + format
+
+p1 + p2 + p3
+
+```
+
+
+#### The Cartesian product ( %x% )  
+
+```{r echo=FALSE, results = "hide" }
+v0 <- v(name = "00") 
+v1 <- v(name = "01") 
+v2 <- v(name = "02") 
+v3 <- v(name = "03") 
+
+A <- v("A")
+B <- v("B")
+C <- v("C")
+D <- v("D")
+E <- v("E")
+
+x = A*B+B*C+C*D+D*E+E*A
+y = v0*v1+v1*v2+v2*v3
+```
+
+```{r echo=TRUE, results = "hide" }
+x %x% y
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=6, fig.width=14.5}
+p1 <- 
+(x) %>% 
+    ggraph()  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1") + format
+
+p2 <- 
+(y) %>% 
+    ggraph()  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g2") + format
+
+
+p3 <-
+(x %x% y) %>% 
+    ggraph()  +
+    geom_edge_link(
+      aes(end_cap = circle(10, "pt"),
+          start_cap = circle(10, "pt")),
+
+      edge_colour = "black",
+      arrow = arrow(
+        angle = 15,
+        length = unit(0.15, "inches"),
+        ends = "last",
+        type = "closed"
+      )
+    ) +
+    geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
+    geom_node_text(aes(label = name)) +
+    geom_edge_loop(end_cap = circle(10, "pt")) +
+    theme_graph() + ggtitle("g1 x g2") + format
+
+p1+ p2 + p3
+```

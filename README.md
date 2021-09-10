@@ -5,7 +5,7 @@
 
 Ralget creates algebraic graphs in R.
 
-## Installation
+### Installation
 
 You can install the evelopment version from
 [GitHub](https://github.com/) with: You can install the evelopment
@@ -16,12 +16,6 @@ version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-# The building blocks of charts
 
 ### Vertices
 
@@ -48,20 +42,46 @@ v("x", Latitude=  78.26077, Longitude=  -94.11077)
 
 Take the following vertices:
 
+``` r
+p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r"); 
+```
+
+The following expressions…
+
+``` r
+g1 <- p*q+s
+g2 <- q*s+q*r
+g3 <- s*r
+```
+
+… produce the following graphs:
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+
 #### Overlaying graphs ( + )
 
 The `+` operator overlays graphs.
 
 ``` r
-g2 <- q*s+q*r
-g1 <- p*q+s
-gg <- (g1+g2)
+g1 + g2
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
 #### Connecting graphs ( \* )
 
 The `*` operator creates a link from each vertex on the right to each
 vertex on the left.
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+``` r
+g1 * g3
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+
+#### The Cartesian product ( %x% )
+
+``` r
+x %x% y
+```
+
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
