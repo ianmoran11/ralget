@@ -46,28 +46,11 @@ v("x", Latitude=  78.26077, Longitude=  -94.11077)
 
 ### Combining Vertices
 
+Take the following vertices:
+
+#### Overlaying graphs ( + )
+
 The `+` operator overlays graphs.
-
-The `*` operator creates a link from each vertex on the right to each
-vertex on the left.
-
-    #> # A tbl_graph: 3 nodes and 1 edges
-    #> #
-    #> # A rooted forest with 2 trees
-    #> #
-    #> # Node Data: 3 x 2 (active)
-    #>   name  .attrs
-    #>   <chr> <list>
-    #> 1 p     <NULL>
-    #> 2 q     <NULL>
-    #> 3 s     <NULL>
-    #> #
-    #> # Edge Data: 1 x 3
-    #>    from    to new  
-    #>   <int> <int> <lgl>
-    #> 1     1     2 TRUE
-
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
 ``` r
 g2 <- q*s+q*r
@@ -75,6 +58,10 @@ g1 <- p*q+s
 gg <- (g1+g2)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+#### Connecting graphs ( \* )
+
+The `*` operator creates a link from each vertex on the right to each
+vertex on the left.
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />

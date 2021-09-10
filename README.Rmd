@@ -48,20 +48,14 @@ v("x", Latitude=  78.26077, Longitude=  -94.11077)
 
 ### Combining Vertices 
 
-The `+` operator overlays graphs.
-
-The `*` operator creates a link from each vertex on the right to each vertex on the left. 
-
+Take the following vertices:
 ```{r echo=FALSE}
 p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r"); 
-p * q + s
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE,fig.height=7, fig.width=7}
-(p * q + s) %>% plot() + 
-  ggtitle(expression("p * q + s")) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
+#### Overlaying graphs ( + )  
+
+The `+` operator overlays graphs.
 
 
 ```{r fig.height=7, fig.width=20}
@@ -77,6 +71,9 @@ format <- theme(plot.title = element_text(hjust = 0.5)) +  theme(panel.backgroun
 
 ```
 
+#### Connecting graphs ( * )  
+
+The `*` operator creates a link from each vertex on the right to each vertex on the left. 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=7, fig.width=20}
  g3 <- s*r
 gg1 <- g1 * g3
