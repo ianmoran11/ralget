@@ -52,7 +52,7 @@ g1 * g3
 
 #### The Cartesian product ( %x% )
 
-The `%*%` operator creates the graph product.
+The `%x%` operator creates the graph product.
 
 ``` r
 x %x% y
