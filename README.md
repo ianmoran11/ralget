@@ -7,12 +7,10 @@ Ralget creates algebraic graphs in R.
 
 ### Installation
 
-You can install the evelopment version from
-[GitHub](https://github.com/) with: You can install the evelopment
-version from [GitHub](https://github.com/) with:
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
