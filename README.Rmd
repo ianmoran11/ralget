@@ -16,14 +16,8 @@ knitr::opts_chunk$set(
 ```
 
 # ralget
-Ralget creates algebraic graphs in R. 
+Ralget creates and combines graphs with algebraic operations. 
 
-### Installation
-You can install the development version from [GitHub](https://github.com/) with:
-``` r
-# install.packages("devtools")
-devtools::install_github("ianmoran11/ralget")
-```
 ```{r example,echo = FALSE, message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
 library(tidygraph)
@@ -35,27 +29,26 @@ devtools::install(); 3
 library(ralget)
 ```
 
-### Vertices 
-Vertices are created with the `v()` function, which takes a name and list of attributes associated with the vertex. 
-This creates a ralget/tidygraph object:
-```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
-v("x", Latitude=  78.26077, Longitude=  -94.11077)
-```
 
 ### Combining Vertices 
 
 Take the following vertices:
 ```{r echo=TRUE }
-p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r"); 
+p <- v("p") 
+q <- v("q") 
+s <- v("s") 
+r <- v("r") 
 ```
 
-The following expressions...
+The `+` operator places vertices in the same graph.  
+The `*` operator joins one vertex to another. 
+
 ```{r echo=TRUE, results = "hide" }
-g1 <- p*q+s
-g2 <- q*s+q*r
-g3 <- s*r
+g1 <- p * q + s
+g2 <- q * s + q* r
+g3 <- s * r
 ```
-... produce the following graphs:
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=12.5}
 g1 <- p*q+s
 g2 <- q*s+q*r
@@ -64,7 +57,7 @@ gg <- (g1+g2)
 
 p1 <-
 g1 %>% 
-    ggraph()  +
+    ggraph(data.frame(x = c(1,2,2), y = c(2,2,1)))  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
           start_cap = circle(10, "pt")),
@@ -80,11 +73,14 @@ g1 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g1 = p * q + s") + format
+    theme_graph() + ggtitle("g1 = p * q + s") + format +
+    xlim(c(1,3))
+
+
 
 p2 <-
 g2 %>% 
-    ggraph()  +
+    ggraph(data.frame(x = c(2,2,3), y = c(2,1,2)))  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
           start_cap = circle(10, "pt")),
@@ -100,11 +96,12 @@ g2 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g2 = q * s + q * r") + format
+    theme_graph() + ggtitle("g2 = q * s + q * r") + format + 
+    xlim(c(1,3))
 
 p3 <-
 g3 %>% 
-    ggraph()  +
+    ggraph(data.frame(x = c(2,3), y = c(1,2)))  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
           start_cap = circle(10, "pt")),
@@ -120,12 +117,14 @@ g3 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g3 = s * r") + format 
+    theme_graph() + ggtitle("g3 = s * r") + format +
+    xlim(c(1,3))
 
 
 p1 + p2 + p3
 ```
 
+### Combining graphs  
 #### Overlaying graphs ( + )  
 
 The `+` operator overlays graphs.
@@ -160,7 +159,8 @@ g1 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     # geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g1") + format
+    theme_graph() + ggtitle("g1") + format +
+    xlim(c(1,3))
 
 
 
@@ -182,7 +182,8 @@ g2 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     # geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g2") + format
+    theme_graph() + ggtitle("g2") + format + 
+    xlim(c(1,3))
 
 
 p3 <-
@@ -203,7 +204,8 @@ gs %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     # geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g1 + g2") + format
+    theme_graph() + ggtitle("g1 + g2") + format + 
+    xlim(c(1,3))
 
 p1 + p2 + p3
 
@@ -211,7 +213,7 @@ p1 + p2 + p3
 
 #### Connecting graphs ( * )  
 
-The `*` operator creates a link from each vertex on the right to each vertex on the left. 
+The `*` operator creates a link from each vertex in the first graph to each vertex in the second graph. 
 ```{r echo=FALSE, results = "hide" }
 gp <- (g1*g3)
 ```
@@ -223,7 +225,7 @@ g1 * g3
 format <- theme(plot.title = element_text(hjust = 0.5)) +  theme(panel.background = element_rect(fill = rgb(.95,.95,.95,1),color = NA)) 
 p1 <-
 g1 %>%
-    ggraph(data.frame(x = c(1,2,2), y = c(2,2,1)))  +
+    ggraph(data.frame(x = c(1,2,2), y = c(2,1.9,1)))  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
           start_cap = circle(10, "pt")),
@@ -239,9 +241,7 @@ g1 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     # geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g1") + format
-
-
+    theme_graph() + ggtitle("g1") + format + xlim(c(1,3))
 
 p2 <-
 g3 %>%
@@ -260,7 +260,7 @@ g3 %>%
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     # geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g2") + format
+    theme_graph() + ggtitle("g2") + format + xlim(c(1,3))
 
 
 p3 <-
@@ -290,7 +290,9 @@ p1 + p2 + p3
 
 #### The Cartesian product ( %x% )  
 
-```{r echo=FALSE, results = "hide" }
+The `%*%` operator creates the graph product. 
+
+```{r echo=FALSE, results = "hide",  message=FALSE, warning=FALSE}
 v0 <- v(name = "00") 
 v1 <- v(name = "01") 
 v2 <- v(name = "02") 
@@ -311,9 +313,14 @@ x %x% y
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=6, fig.width=14.5}
+layout_df <-data.frame(
+  x = c(-2.25625566239723, -2.06694404978908, -1.58402956895644, -1.55953811495272, -1.89737276852298), 
+  y = c(0.138709465825545, -1.1508396186631, -0.585121176745636, 0.66449533913645, 1.38325400507676))
+
+
 p1 <- 
-(x) %>% 
-    ggraph()  +
+x %>% 
+    ggraph(layout_df)  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
           start_cap = circle(10, "pt")),
@@ -329,11 +336,15 @@ p1 <-
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g1") + format
+    theme_graph() + ggtitle("x") + format + xlim(c(-4,0))
+
+layout_df <-data.frame(
+  x = rev(c(1, 2, 3 ,4)), 
+  y = c(0, 0, 0,0)) 
 
 p2 <- 
 (y) %>% 
-    ggraph()  +
+    ggraph(layout_df)  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
           start_cap = circle(10, "pt")),
@@ -349,8 +360,7 @@ p2 <-
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g2") + format
-
+    theme_graph() + ggtitle("y") + format
 
 p3 <-
 (x %x% y) %>% 
@@ -370,7 +380,22 @@ p3 <-
     geom_node_point(col = "grey66", size = 10, show.legend = FALSE) +
     geom_node_text(aes(label = name)) +
     geom_edge_loop(end_cap = circle(10, "pt")) +
-    theme_graph() + ggtitle("g1 x g2") + format
+    theme_graph() + ggtitle("x %x% y") + format
 
 p1+ p2 + p3
+```
+
+
+### Some more on vertices 
+Vertices are created with the `v()` function, which takes a name and list of attributes associated with the vertex. 
+This creates a ralget/tidygraph object:
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+v("x", Latitude=  78.26077, Longitude=  -94.11077)
+```
+
+### Installation
+You can install the development version from [GitHub](https://github.com/) with:
+``` r
+# install.packages("devtools")
+devtools::install_github("ianmoran11/ralget")
 ```

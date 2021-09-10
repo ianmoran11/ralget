@@ -3,19 +3,64 @@
 
 # ralget
 
-Ralget creates algebraic graphs in R.
+Ralget creates and combines graphs with algebraic operations.
 
-### Installation
+### Combining Vertices
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+Take the following vertices:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("ianmoran11/ralget")
+p <- v("p") 
+q <- v("q") 
+s <- v("s") 
+r <- v("r") 
 ```
 
-### Vertices
+The `+` operator places vertices in the same graph.  
+The `*` operator joins one vertex to another.
+
+``` r
+g1 <- p * q + s
+g2 <- q * s + q* r
+g3 <- s * r
+```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+### Combining graphs
+
+#### Overlaying graphs ( + )
+
+The `+` operator overlays graphs.
+
+``` r
+g1 + g2
+```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+
+#### Connecting graphs ( \* )
+
+The `*` operator creates a link from each vertex in the first graph to
+each vertex in the second graph.
+
+``` r
+g1 * g3
+```
+
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+
+#### The Cartesian product ( %x% )
+
+The `%*%` operator creates the graph product.
+
+``` r
+x %x% y
+```
+
+<img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
+
+### Some more on vertices
 
 Vertices are created with the `v()` function, which takes a name and
 list of attributes associated with the vertex. This creates a
@@ -36,50 +81,12 @@ v("x", Latitude=  78.26077, Longitude=  -94.11077)
 #> # … with 2 variables: from <int>, to <int>
 ```
 
-### Combining Vertices
+### Installation
 
-Take the following vertices:
-
-``` r
-p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r"); 
-```
-
-The following expressions…
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
-g1 <- p*q+s
-g2 <- q*s+q*r
-g3 <- s*r
+# install.packages("devtools")
+devtools::install_github("ianmoran11/ralget")
 ```
-
-… produce the following graphs:
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
-
-#### Overlaying graphs ( + )
-
-The `+` operator overlays graphs.
-
-``` r
-g1 + g2
-```
-
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
-
-#### Connecting graphs ( \* )
-
-The `*` operator creates a link from each vertex on the right to each
-vertex on the left.
-
-``` r
-g1 * g3
-```
-
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
-
-#### The Cartesian product ( %x% )
-
-``` r
-x %x% y
-```
-
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
