@@ -1,5 +1,7 @@
 ---
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,52 +16,56 @@ knitr::opts_chunk$set(
 ```
 
 # ralget
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of ralget is to ...
+Ralget creates algebraic graphs in R. 
 
 ## Installation
-
-You can install the released version of ralget from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("ralget")
-```
-
-And the development version from [GitHub](https://github.com/) with:
-
+You can install the evelopment version from [GitHub](https://github.com/) with:
 ``` r
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
 ## Example
-
 This is a basic example which shows you how to solve a common problem:
-
-```{r example}
+```{r example,echo = FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(tidygraph)
-library(tibble)
 library(ggraph)
-library(magrittr)
+library(visNetwork)
 library(ralget)
-devtools::load_all()
+```
 
-# Algebra ----------------------------------------------------------------------
-## Basic replication -----------------------------------------------------------
+# The building blocks of charts 
+### Vertices 
+Vertices are created with the `v()` function, which takes a name and list of attributes associated with the vertex. 
+This creates a ralget/tidygraph object:
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+v("x", Latitude=  78.26077, Longitude=  -94.11077)
+```
+
+### Combining Vertices 
+
+The `+` operator overlays graphs.
+
+The `*` operator creates a link from each vertex on the right to each vertex on the left. 
+
+```{r echo=FALSE}
 p <- v("p"); q <- v("q"); s <- v("s"); r <- v("r"); 
+p * q + s
+```
 
-g1 <- p*q+s
+```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE,fig.height=3, fig.width=3}
+(p * q + s) %>% plot()
+```
+
+
+```{r fig.height=5, fig.width=5}
 g2 <- q*s+q*r
+g1 <- p*q+s
+gg <- (g1+g2)
+gg %>% plot()
+```
 
-g1 %>% plot
-g2 %>% plot
-(g1+g2) %>% plot()
-
+```{r fig.height=5, fig.width=5}
 g3 <- s*r
-g3 %>% plot()
-(g1*g3) %>% plot()
-
+(g1*g3) %>% plot(loops = T) 
 ```

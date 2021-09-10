@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+ralget.Rcheck/
+ralget*.tar.gz
+ralget*.tgz

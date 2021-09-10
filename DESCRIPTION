@@ -22,6 +22,7 @@ Imports:
     tibble,
     stringr,
     rlang,
+    ggraph,
     forcats,
 Suggests: 
     testthat (>= 2.1.0),

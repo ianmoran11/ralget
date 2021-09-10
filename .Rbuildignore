@@ -3,3 +3,6 @@
 ^ralget\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
+^ralget\.Rcheck$
+^ralget.*\.tar\.gz$
+^ralget.*\.tgz$
