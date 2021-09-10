@@ -45,7 +45,7 @@ multiply <- function(v1, v2){
   v1_names <- activate(v1,"nodes") %>% pull(name)
   v2_names <- activate(v2,"nodes") %>% pull(name)
 
-  new_edges <- crossing(from = v1_names, to = v2_names)
+  new_edges <- tidyr::crossing(from = v1_names, to = v2_names)
 
   bound <-   tidygraph::graph_join(v1,v2)
 

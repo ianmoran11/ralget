@@ -62,7 +62,20 @@ p * q + s
 g2 <- q*s+q*r
 g1 <- p*q+s
 gg <- (g1+g2)
-gg %>% plot()
+library("patchwork")
+
+ (plot(g1) +  ggtitle('Plot 4') )
+
+  
+  plot(g2) + plot(gg)
+
+bind_graphs(
+  g1 %>% mutate(graph_name = "g1"),
+  g2%>% mutate(graph_name = "g2"),
+  gg %>% mutate(graph_name = "g1 + g2")
+) %>% 
+  plot() + facet_wrap(~graph_name)
+
 ```
 
 ```{r fig.height=5, fig.width=5}
