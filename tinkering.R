@@ -1,7 +1,9 @@
 library(rlang)
 sumv <- function(...){ list(...) %>% reduce(`+`)}
 
-z1 <- v("z1", form = quo(rnorm(1,100,15)))
+z1 %>% pull(.attrs)
+
+z1 <- v("z1", form = quo(rnorm(1,100,15))
 x1 <- v("x1", form = quo(rnorm(1,100,15)))
 x2 <- v("x2", form = quo(rnorm(1,100,15)))
 y <- v("y", form = quo(rnorm(1,0,15)))
@@ -11,7 +13,20 @@ rlang::eval_tidy(myquo[[1]])
 
 reg <-   (sumv(x1*e(.5), x2*e(.3))*y) + ((z1*sumv(e(.4)*x1, e(.3)*y))) 
  
-reg %>% plot()
+reg %>% plot() +
+    geom_edge_link(aes(label = .attrs), 
+                   angle_calc = 'along',
+                   label_dodge = unit(2.5, 'mm'),
+                   arrow = arrow(length = unit(4, 'mm')), 
+                   end_cap = circle(3, 'mm')) 
+
+ggraph(reg, layout = 'graphopt') + 
+    geom_edge_link(aes(label = .attrs), 
+                   angle_calc = 'along',
+                   label_dodge = unit(2.5, 'mm'),
+                   arrow = arrow(length = unit(4, 'mm')), 
+                   end_cap = circle(3, 'mm')) + 
+    geom_node_point(size = 5)
 print("---------------------------------------------------")
 t1 <- Sys.time()
 
@@ -55,8 +70,16 @@ t2 - t1
 
 reg %>% pull(.attrs) %>% .[[1]]  %>% as.character() %>%  str_remove("~")
 
-df1 <- tibble(x2 = rep(NA,10000),z1= rep(NA,10000), x1=rep(NA,10000),y=rep(NA,10000))
+render <- function(x,y){
+   t1 = x %>%  paste(collapse = ",\n ")  %>% paste0("df2 <- tibble(",.,")") 
+   t2 = y %>% paste(collapse = ",\n ")  %>% paste0("df2 %>% mutate(",.,")") %>% 
+ str_replace_all("rnorm\\(1", "rnorm(10^7")
+   list(t1,t2)
+   }
 
+df1 <- tibble(x2 = rep(NA,10^7),z1= rep(NA,10^7), x1=rep(NA,10^7),y=rep(NA,10^7))
+
+library(magrittr)
 res <- 
 reg  %>% mutate(form = map_chr(row_number(), 
 ~ filter(.E(), to == .x) %>% as_tibble() %>% mutate(out = paste(.attrs, from_name, sep = "*"))  %>% 
@@ -66,8 +89,20 @@ pull(out) %>% paste(collapse = " + ")
  mutate(init = map_chr(.attrs, ~ .x %>% as.character() %>%  str_remove("~"))) %>%
  mutate(expr = paste(init, form, sep = "+") %>% str_remove("\\+$")) %>%
  mutate(mu = paste0(name," = ", expr)) %>%
+ mutate(mu2= paste0(name," = ", "rep(NA,10^7)")) %>%
  mutate(order = node_topo_order())  %>%
- arrange(order) %>%
+ as_tibble() %>%
+ arrange(order) %$% 
+  render(mu2,mu) %>% paste(collapse = "\n") %>% parse(text = .) %>% eval()
+  j
+library(broom)
+
+res %>% lm(y ~ x1 + x2 + z1, data =. ) %>% tidy
+
+graph_is_dag()
  pull(mu) %>% paste(collapse = ",\n ")  %>% paste0("df1 %>% mutate(",.,")") %>% 
- str_replace_all("rnorm\\(1", "rnorm(10000")  %>% 
+ str_replace_all("rnorm\\(1", "rnorm(10^7")  %>% 
  parse(text = .)   %>% eval()
+
+
+with_graph(reg, graph_is_dag())
