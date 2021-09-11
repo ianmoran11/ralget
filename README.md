@@ -90,3 +90,35 @@ You can install the development version from
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
+
+## Algegraic laws
+
+### Addition is commutative
+
+*V*<sub>1</sub> + *V*<sub>2</sub> = *V*<sub>2</sub> + *V*<sub>1</sub>
+
+``` r
+(v1+v2)==(v2+v1)
+#> [1] TRUE
+```
+
+*V*<sub>1</sub> × *V*<sub>2</sub> ≠ *V*<sub>2</sub> × *V*<sub>1</sub>
+
+``` r
+(v1*v2)==(v2*v1)
+#> [1] FALSE
+```
+
+### Multiplication is distributive
+
+``` r
+(v1*(v2+v3))==((v1*v2)+(v1*v3))
+#> [1] TRUE
+```
+
+*V*<sub>1</sub> × (*V*<sub>2</sub>+*V*<sub>3</sub>) = *V*<sub>1</sub> × *V*<sub>2</sub> + *V*<sub>1</sub> × *V*<sub>3</sub>
+
+``` r
+((v2+v3)*v1)==((v2*v1)+(v3*v1))
+#> [1] TRUE
+```

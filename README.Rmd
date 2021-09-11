@@ -399,3 +399,35 @@ You can install the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("ianmoran11/ralget")
 ```
+
+## Algegraic laws
+
+### Addition is commutative
+$$ 
+V_1 + V_2 = V_2 + V_1 
+$$
+```{r}
+(v1+v2)==(v2+v1)
+```
+
+$$ 
+V_1 \times V_2 \neq V_2 \times V_1 
+$$
+
+```{r}
+(v1*v2)==(v2*v1)
+```
+
+### Multiplication is distributive
+```{r}
+(v1*(v2+v3))==((v1*v2)+(v1*v3))
+```
+
+$$ 
+V_1 \times (V_2 + V_3) = V_1 \times V_2 + V_1 \times V_3
+$$ 
+
+```{r}
+((v2+v3)*v1)==((v2*v1)+(v3*v1))
+```
+

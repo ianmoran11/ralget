@@ -76,6 +76,20 @@ The <code>*</code> operator joins one vertex to another.</p>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ianmoran11/ralget&quot;</span>)</span></code></pre></div>
+<h2 id="algegraic-laws">Algegraic laws</h2>
+<h3 id="addition-is-commutative">Addition is commutative</h3>
+<p><em>V</em><sub>1</sub> + <em>V</em><sub>2</sub> = <em>V</em><sub>2</sub> + <em>V</em><sub>1</sub></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(v1<span class="sc">+</span>v2)<span class="sc">==</span>(v2<span class="sc">+</span>v1)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p><em>V</em><sub>1</sub> × <em>V</em><sub>2</sub> ≠ <em>V</em><sub>2</sub> × <em>V</em><sub>1</sub></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(v1<span class="sc">*</span>v2)<span class="sc">==</span>(v2<span class="sc">*</span>v1)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<h3 id="multiplication-is-distributive">Multiplication is distributive</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(v1<span class="sc">*</span>(v2<span class="sc">+</span>v3))<span class="sc">==</span>((v1<span class="sc">*</span>v2)<span class="sc">+</span>(v1<span class="sc">*</span>v3))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p><em>V</em><sub>1</sub> × (<em>V</em><sub>2</sub>+<em>V</em><sub>3</sub>) = <em>V</em><sub>1</sub> × <em>V</em><sub>2</sub> + <em>V</em><sub>1</sub> × <em>V</em><sub>3</sub></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>((v2<span class="sc">+</span>v3)<span class="sc">*</span>v1)<span class="sc">==</span>((v2<span class="sc">*</span>v1)<span class="sc">+</span>(v3<span class="sc">*</span>v1))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 
 </body>
 </html>
