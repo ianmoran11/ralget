@@ -14,13 +14,35 @@ SIR <-
 S01    * ( e(.func = function(.value){.value * .5} ) * BIS01  + 
            e(.func = function(.value){.value * 1} )  * S02 ) +
 
-I01    * ( e(.func = function(.value){.value * .5} ) * BIS01  +
-           e(.func = function(.value){.value * 1}) * I02 ) 
+I01    * ( e(.func = function(.value){.value * 1} ) * BIS01  +
+           e(.func = function(.value){.value * 1}) * I02 )  +
 
 BIS01  *  (e(.func = function(.value){.value * 1} ) * S02  +
-           e(.func = function(.value){.value * -1}) *  I01 ) 
+           e(.func = function(.value){.value * -1}) *  I02 ) 
 
-wk <- 
+
+evaluate(SIR)
+
+
+evaluate <- function(g){
+    g %>% 
+    mutate(order = node_topo_order())  %>%
+    arrange(order) %>% 
+    mutate(edge_funcs = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(.attrs) )) %>% 
+    mutate(edge_args = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(from_name) )) %>%
+    mutate(eval_statement = pmap_dbl(  
+        list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args), 
+        .f = function(...){
+            wk <- list(...)
+            do.call(
+                wk$.attrs$.func, 
+                map2(wk$edge_funcs,wk$edge_args, ~ do.call(.x[[1]], list(sym(.y))))
+                )
+                }
+        )
+    ) 
+}
+
 SIR %>% 
 mutate(order = node_topo_order())  %>%
  arrange(order) %>% 
@@ -38,27 +60,45 @@ mutate(order = node_topo_order())  %>%
     )
 ) 
 
+wk <- 
+SIR %>% 
+mutate(order = node_topo_order())  %>%
+ arrange(order) %>% 
+ mutate(edge_funcs = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(.attrs) )) %>% 
+ mutate(edge_args = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(from_name) )) %>%
+ mutate(eval_statement = pmap(  
+    list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args), 
+     .f = function(...){list(...)})
+) %>% pull(eval_statement)
 
 
 
 
 assign(wk[[1]]$name, do.call(wk[[1]]$.attrs$.func, wk[[1]]))
 S01
+
 assign(wk[[2]]$name, do.call(wk[[2]]$.attrs$.func, wk[[2]]))
 I01
-assign(wk[[2]]$name, 
-do.call(wk[[3]]$.attrs$.func, 
-    do.call(wk[[3]]$edge_funcs[[1]][[1]], list(sym(wk[[3]]$edge_args[1])))
-    )
 
+assign(wk[[3]]$name, 
+       do.call(
+          wk[[3]]$.attrs$.func, 
+          list(do.call(
+                    wk[[3]]$edge_funcs[[1]][[1]], 
+                    list(sym(wk[[3]]$edge_args[1]))
+              )
+           )
+       )
+    )
+rm(BIS01)
 
 do.call(wk[[4]]$.attrs$.func, 
     do.call(wk[[4]]$edge_funcs[[1]][[1]], list(sym(wk[[4]]$edge_args[1])))
     ,
     do.call(wk[[4]]$edge_funcs[[2]][[1]], list(sym(wk[[4]]$edge_args[2])))
     )
-# Calc edge values 
 
+# Calc edge values 
 do.call(
   wk[[4]]$.attrs$.func, 
   map2(wk[[4]]$edge_funcs,wk[[4]]$edge_args, ~ do.call(.x[[1]], list(sym(.y))))
