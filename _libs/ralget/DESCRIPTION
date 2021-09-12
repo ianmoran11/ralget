@@ -16,6 +16,6 @@ Imports: dplyr, tidyr, purrr, tidygraph, magrittr, tibble, stringr,
         rlang, ggraph, forcats,
 Suggests: testthat (>= 2.1.0), knitr, rmarkdown, tidyverse
 NeedsCompilation: no
-Packaged: 2021-09-12 00:54:14 UTC; ian
+Packaged: 2021-09-12 12:45:53 UTC; ian
 Depends: R (>= 3.5.0)
-Built: R 4.1.1; ; 2021-09-12 00:54:14 UTC; unix
+Built: R 4.1.1; ; 2021-09-12 12:45:54 UTC; unix

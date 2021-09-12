@@ -4,8 +4,13 @@
 ==.ralget               Create vertex
 cartesian_product       Cartesian product of two ralgets
 e                       Create ralget edge
+evaluate                Evaluate a graph where nodes and edges store
+                        functions.
 get_edge_names          Get edge names
 multiply                Multiply two ralget graphs - original
 plot.ralget             Add two ralget graphs
 plus                    Add two ralget graphs - original
+ralget_sim              simulate data from a ralget
+render                  concat to vectors for data sim
+sumv                    Sum multiple ralget vertices
 v                       Create vertex

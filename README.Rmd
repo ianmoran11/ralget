@@ -25,7 +25,6 @@ library(ggraph)
 library(patchwork)
 library(magrittr)
 devtools::install(); 3
-#devtools::install(); 3
 library(ralget)
 format <- theme(plot.title = element_text(hjust = 0.5)) +  theme(panel.background = element_rect(fill = rgb(.95,.95,.95,1),color = NA)) 
 ```
@@ -458,7 +457,40 @@ x2 <- v("x2", form = quo(rnorm(1,100,15)))
 
 reg <-   (sumv(x1*e(.5), x2*e(.3))*y) + ((z1*sumv(e(.4)*x1, e(.3)*y))) 
 
+reg <-      ( x1*e(.5) + x2*e(.3)) * y  + 
+       z1 * ( e(.4)*x1 +  e(.3)*y)
 plot(reg)
+
+```
+
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+ralget_sim(reg, 1000)
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+library(microbenchmark)
+microbenchmark(ralget_sim(reg, 1000000))
+
+```
+
+ 
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+ralget_sim(reg, 1000)
+
+```
+
+
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+ralget_sim(reg, 1000)
+
 ```
 
 
