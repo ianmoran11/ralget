@@ -22,9 +22,9 @@ ralget_sim <- function(graph, n = 1){
 
 
 intermediate <- 
-reg  %>% mutate(form = map_chr(row_number(), 
+graph  %>% mutate(form = map_chr(row_number(), 
 ~ filter(.E(), to == .x) %>% as_tibble() %>% mutate(out = paste(.attrs, from_name, sep = "*"))  %>% 
-pull(out) %>% paste(collapse = " + ")
+pull(out) %>% paste(collape = " * ")
  # mutate(form = map2(from_name, .attr, ~paste(.x,.y[[1]],sep ="*"))
  )) %>%
  mutate(init = map_chr(.attrs, ~ .x %>% as.character() %>%  str_remove("~"))) %>%

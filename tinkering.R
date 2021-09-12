@@ -1,37 +1,7 @@
 library(rlang)
-sumv <- function(...){ list(...) %>% reduce(`+`)}
 
-z1 %>% pull(.attrs)
 
-z1 <- v("z1", form = quo(rnorm(1,100,15))
-x1 <- v("x1", form = quo(rnorm(1,100,15)))
-x2 <- v("x2", form = quo(rnorm(1,100,15)))
-y <- v("y", form = quo(rnorm(1,0,15)))
-
-myquo <- as_tibble(x1) %>% pull(.attrs) %>% .[[1]]
-rlang::eval_tidy(myquo[[1]])
-
-reg <-   (sumv(x1*e(.5), x2*e(.3))*y) + ((z1*sumv(e(.4)*x1, e(.3)*y))) 
- 
-reg %>% plot() +
-    geom_edge_link(aes(label = .attrs), 
-                   angle_calc = 'along',
-                   label_dodge = unit(2.5, 'mm'),
-                   arrow = arrow(length = unit(4, 'mm')), 
-                   end_cap = circle(3, 'mm')) 
-
-ggraph(reg, layout = 'graphopt') + 
-    geom_edge_link(aes(label = .attrs), 
-                   angle_calc = 'along',
-                   label_dodge = unit(2.5, 'mm'),
-                   arrow = arrow(length = unit(4, 'mm')), 
-                   end_cap = circle(3, 'mm')) + 
-    geom_node_point(size = 5)
-print("---------------------------------------------------")
-t1 <- Sys.time()
-
-for(i in 1:100){
-
+# Evaluate locally ---------------------------------------------------
 reg %>% 
   mutate(value = map_dbl(.attrs, ~ .x[[1]] %>%  eval_tidy)) %>% 
   mutate(order = node_topo_order()) %>% 
@@ -50,59 +20,40 @@ reg %>%
 value
    })) 
 
+
+# Compiler approach ---------------------------------------------------
+
+S01 <- v("S01")
+I01 <- v("I01")
+R01 <- v("R01")
+BIS01 <- v("BIS01")
+GI01 <- v("GI01")
+
+S02 <- v("S02")
+I02 <- v("I02")
+R02 <- v("R02")
+
+SIR <- 
+S01    * (BIS01 + S02) +
+I01    * (GI01  + I02) +
+R01    * (GI01  + R02) +
+BIS01  * (S02   + I02) +
+GI01   * (I02   + R02)
+
+SIR <- activate(SIR, "edges") %>% mutate(.attrs = 1) %>% activate("nodes")
+
+increment_t <- function(g, t = 1){
+  g %>% 
+  mutate(name = 
+    str_extract(name,"[0-9]+$") %>% as.numeric() %>% `+`(t) %>% 
+    as.character() %>% str_pad(2,"left", "0") %>% 
+    paste0(str_remove(name,"[0-9]+$"),.)) 
 }
-t2 <- Sys.time()
 
-t2 - t1
+SIRT <- map(1:5, increment_t, g = SIR) %>% reduce(`+`)
 
+plot(SIRT)
 
-al <- list(a = 0)
-a = 0 
+SIRT <- SIRT %>% mutate(.attrs = map(row_number(), ~ list(form =  quo(rnorm(1,1,0)))))
 
-t1 <- Sys.time()
-for(i in 1:10^7){
-
-al$a <-  al$a + 1
-
-}
-t2 <- Sys.time()
-t2 - t1
-
-reg %>% pull(.attrs) %>% .[[1]]  %>% as.character() %>%  str_remove("~")
-
-render <- function(x,y){
-   t1 = x %>%  paste(collapse = ",\n ")  %>% paste0("df2 <- tibble(",.,")") 
-   t2 = y %>% paste(collapse = ",\n ")  %>% paste0("df2 %>% mutate(",.,")") %>% 
- str_replace_all("rnorm\\(1", "rnorm(10^7")
-   list(t1,t2)
-   }
-
-df1 <- tibble(x2 = rep(NA,10^7),z1= rep(NA,10^7), x1=rep(NA,10^7),y=rep(NA,10^7))
-
-library(magrittr)
-res <- 
-reg  %>% mutate(form = map_chr(row_number(), 
-~ filter(.E(), to == .x) %>% as_tibble() %>% mutate(out = paste(.attrs, from_name, sep = "*"))  %>% 
-pull(out) %>% paste(collapse = " + ")
- # mutate(form = map2(from_name, .attr, ~paste(.x,.y[[1]],sep ="*"))
- )) %>%
- mutate(init = map_chr(.attrs, ~ .x %>% as.character() %>%  str_remove("~"))) %>%
- mutate(expr = paste(init, form, sep = "+") %>% str_remove("\\+$")) %>%
- mutate(mu = paste0(name," = ", expr)) %>%
- mutate(mu2= paste0(name," = ", "rep(NA,10^7)")) %>%
- mutate(order = node_topo_order())  %>%
- as_tibble() %>%
- arrange(order) %$% 
-  render(mu2,mu) %>% paste(collapse = "\n") %>% parse(text = .) %>% eval()
-  j
-library(broom)
-
-res %>% lm(y ~ x1 + x2 + z1, data =. ) %>% tidy
-
-graph_is_dag()
- pull(mu) %>% paste(collapse = ",\n ")  %>% paste0("df1 %>% mutate(",.,")") %>% 
- str_replace_all("rnorm\\(1", "rnorm(10^7")  %>% 
- parse(text = .)   %>% eval()
-
-
-with_graph(reg, graph_is_dag())
+ralget_sim(SIRT %>% get_edge_names %>% activate("nodes"), n = 100)
