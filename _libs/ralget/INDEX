@@ -1,0 +1,11 @@
+%x%                     Cartesian product of two ralgets
+*.ralget                Multiply two ralget graphs
++.ralget                Add two ralget graphs
+==.ralget               Create vertex
+cartesian_product       Cartesian product of two ralgets
+e                       Create ralget edge
+get_edge_names          Get edge names
+multiply                Multiply two ralget graphs - original
+plot.ralget             Add two ralget graphs
+plus                    Add two ralget graphs - original
+v                       Create vertex

@@ -7,8 +7,6 @@
 
 plot.ralget <- function(g,loops = FALSE,...){
 
-  coords  = tribble(~x, ~y, 1,1,1,2,2,3,2,4) %>% as.data.frame
-
 
 if(loops == T){
 
@@ -16,8 +14,9 @@ p <-   g  %>%
     ggraph(...)  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
-          start_cap = circle(10, "pt")),
-
+          start_cap = circle(10, "pt"),
+          label = .attrs),
+      label_dodge = unit(2.5, 'mm'),
       edge_colour = "black",
       arrow = arrow(
         angle = 15,
@@ -46,8 +45,9 @@ return(p)
     ggraph(...)  +
     geom_edge_link(
       aes(end_cap = circle(10, "pt"),
-          start_cap = circle(10, "pt")),
-
+          start_cap = circle(10, "pt"),
+          label = .attrs),
+     label_dodge = unit(2.5, 'mm'),
       edge_colour = "black",
       arrow = arrow(
         angle = 15,
