@@ -1,0 +1,52 @@
+Package: vscDebugger
+Title: Support for Visual Studio Code Debugger
+Version: 0.4.7
+Authors@R: c(
+    person(
+        given = "Manuel",
+        family = "Hentschel",
+        role = c("aut", "cre"),
+        email = "Manuel.Hentschel@outlook.com"
+    ),
+    person(
+        given = "Kun",
+        family = "Ren",
+        role = "ctb",
+        email = "mail@renkun.me"
+    ),
+    person(
+        given = "Dénes", 
+        family = "Tóth", 
+        role = "ctb",
+        email = "toth.denes@kogentum.hu", 
+        comment = c(ORCID = "0000-0003-4262-3217")
+    ))
+Description: Provides support for a visual studio code
+    debugger
+License: MIT
+URL: https://ManuelHentschel.github.io/vscDebugger/,
+        https://github.com/ManuelHentschel/vscDebugger
+BugReports: https://github.com/ManuelHentschel/vscDebugger/issues
+Imports: jsonlite, R6
+Suggests: pkgload, knitr, rmarkdown, markdown
+Encoding: UTF-8
+NeedsCompilation: yes
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: vscDebugger
+RemoteUsername: ManuelHentschel
+RemoteRef: HEAD
+RemoteSha: 0522f6a04527c93a785d3fe485aabedb1eae64b6
+GithubRepo: vscDebugger
+GithubUsername: ManuelHentschel
+GithubRef: HEAD
+GithubSHA1: 0522f6a04527c93a785d3fe485aabedb1eae64b6
+Packaged: 2021-09-14 03:02:14 UTC; ian
+Author: Manuel Hentschel [aut, cre],
+  Kun Ren [ctb],
+  Dénes Tóth [ctb] (<https://orcid.org/0000-0003-4262-3217>)
+Maintainer: Manuel Hentschel <Manuel.Hentschel@outlook.com>
+Built: R 4.1.1; x86_64-pc-linux-gnu; 2021-09-14 03:02:14 UTC; unix

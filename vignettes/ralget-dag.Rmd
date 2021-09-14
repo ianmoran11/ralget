@@ -1,0 +1,102 @@
+---
+title: "Simulating data from dags with ralget"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating data from dags with ralget}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tidyverse)
+library(tidygraph)
+library(ggraph)
+library(patchwork)
+library(magrittr)
+library(ralget)
+```
+
+
+```{r}
+# Add helper functions
+product <- function(...) {list(...) %>% reduce(`*`)}
+b <- function(m){ e(.func = function(.value){.value * m})}
+const <- function(x){function(...){x}}
+increment_t <- function(g, t = 1){
+  g %>% 
+  mutate(name = 
+    str_extract(name,"[0-9]+$") %>% as.numeric() %>% `+`(t) %>% 
+    as.character() %>% str_pad(2,"left", "0") %>% 
+    str_remove("NA") %>% 
+    paste0(str_remove(name,"[0-9]+$"),.) %>% str_remove("NA"))
+}
+```
+
+
+```{r}
+Y <-  v("Y", .func = function(...){rnorm(10000,list(...)[[1]] + list(...)[[2]], 10)})
+X1 <- v("X1",.func = function(...){rnorm(10000,sum(...) + 100, 10)})
+X2 <- v("X2",.func = function(...){rnorm(10000,sum(...) + 100, 10)})
+```
+
+
+```{r}
+g <- X1*b(1)*Y + X2*b(1)*Y
+class(g) <- class(g)[-1]
+plot(g)
+```
+
+
+```{r}
+data <- 
+evaluate(g) %>% as_tibble() %>% unnest(eval_statement) %>%
+group_by(name) %>% mutate(sim_id = row_number()) %>%
+select(name, sim_id, value = eval_statement) %>%
+spread(name, value)
+
+data
+```
+
+
+```{r}
+t <- (v("t1")*v("t2")) +
+     (v("t2")*v("t3")) + 
+     (v("t3")*v("t4")) + 
+     (v("t4")*v("t5"))
+```
+
+```{r}
+l <- g %x% t
+plot(l)
+```
+
+```{r}
+lt <- 
+l %>% mutate(name = str_remove(name, "\\-.+")) %>% 
+graph_join(g) %>% 
+activate("edges") %>%
+mutate(.attrs = purrr::map(1, ~ b(1)))  %>%
+activate("nodes") %>% get_edge_names() %>% 
+activate("nodes")
+
+lt <- 
+l %>% 
+mutate(.attrs = purrr::map(1, ~ list(.func = function(...){rnorm(10,sum(...) + 100, 10)}))) %>%
+activate("edges") %>%
+mutate(.attrs = purrr::map(1, ~ b(1)))  %>%
+activate("nodes") %>% get_edge_names() %>% 
+activate("nodes") 
+
+data <- 
+evaluate(lt) %>% as_tibble() %>% unnest(eval_statement) %>%
+group_by(name) %>% mutate(sim_id = row_number()) %>%
+select(name, sim_id, value = eval_statement) %>%
+spread(name, value)
+```

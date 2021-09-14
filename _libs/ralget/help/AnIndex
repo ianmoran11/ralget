@@ -5,6 +5,8 @@
 cartesian_product	cartesian_product
 e	e
 evaluate	evaluate
+evaluate_execute	evaluate_execute
+evaluate_prepare	evaluate_prepare
 get_edge_names	get_edge_names
 multiply	multiply
 plot.ralget	plot.ralget

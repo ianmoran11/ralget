@@ -1,6 +1,5 @@
 
 product <- function(...){list(...) %>% reduce(`*`)}
-
 const <- function(x){function(...){x}}
 
 S01 <-   v("S01",   .func = const(10000))
@@ -19,6 +18,10 @@ I01    * ( e(.func = function(.value){.value * 1} ) * BIS01  +
 
 BIS01  *  (e(.func = function(.value){.value * 1} ) * S02  +
            e(.func = function(.value){.value * -2}) *  I02 ) 
+
+evaluate(SIR)
+
+
 
 
 microbenchmark(evaluate(SIR))

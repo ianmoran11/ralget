@@ -1,0 +1,133 @@
+
+R version 3.5.1 (2018-07-02) -- "Feather Spray"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library("colorspace")
+> 
+> ## qualitative palette
+> rainbow_hcl(12)
+ [1] "#E495A5" "#DB9D85" "#C7A76C" "#ABB065" "#86B875" "#5CBD92" "#39BEB1"
+ [8] "#4CB9CC" "#7DB0DD" "#ACA4E2" "#CD99D8" "#E093C3"
+> 
+> ## a few useful diverging HCL palettes
+> diverging_hcl(7)
+[1] "#023FA5" "#7D87B9" "#BEC1D4" "#E2E2E2" "#D6BCC0" "#BB7784" "#8E063B"
+> diverging_hcl(7, h = c(246, 40), c = 96, l = c(65, 90))
+[1] "#1FA4FF" "#97BFF3" "#CAD6E9" "#E2E2E2" "#E7D1C5" "#E9B18B" "#E28912"
+> diverging_hcl(7, h = c(130, 43), c = 100, l = c(70, 90))
+[1] "#11C638" "#8DD593" "#C6DEC7" "#E2E2E2" "#EAD3C6" "#F0B98D" "#EF9708"
+> diverging_hcl(7, h = c(180, 70), c = 70, l = c(90, 95))
+[1] "#22FDEB" "#A8F8ED" "#DAF3EF" "#F1F1F1" "#F4EEDE" "#F9E8B9" "#FEE17F"
+> diverging_hcl(7, h = c(180, 330), c = 59, l = c(75, 95))
+[1] "#0FCFC0" "#9CDED6" "#D5EAE7" "#F1F1F1" "#F3E1EB" "#F6C4E1" "#F79CD4"
+> diverging_hcl(7, h = c(128, 330), c = 98, l = c(65, 90))
+[1] "#10B717" "#8ACC8A" "#C4DBC4" "#E2E2E2" "#EBCDDE" "#F5A3D6" "#FD63CB"
+> diverging_hcl(7, h = c(255, 330), l = c(40, 90))
+[1] "#155DB5" "#8597C7" "#C2C7D9" "#E2E2E2" "#D9C1CF" "#C683AC" "#AB1E84"
+> diverging_hcl(7, c = 100, l = c(50, 90), power = 1)
+[1] "#4A6FE3" "#8595E1" "#B5BBE3" "#E2E2E2" "#E6AFB9" "#E07B91" "#D33F6A"
+> 
+> ## sequential palettes
+> sequential_hcl(12)
+ [1] "#023FA5" "#3C54A6" "#5868AC" "#6F7BB4" "#848DBC" "#979EC4" "#A9AECB"
+ [8] "#B9BDD2" "#C8CAD8" "#D4D5DD" "#DDDEE0" "#E2E2E2"
+> heat_hcl(12, h = c(0, -100), l = c(75, 40), c = c(40, 80), power = 1)
+ [1] "#E8A8B4" "#E39CB3" "#DD91B3" "#D586B4" "#CC7CB6" "#C273B8" "#B66AB9"
+ [8] "#A763BB" "#965EBB" "#805ABB" "#6458B9" "#3A58B6"
+> terrain_hcl(12, c = c(65, 0), l = c(45, 95), power = c(1/3, 1.5))
+ [1] "#027C1E" "#4D8A22" "#74972F" "#95A341" "#B2AD57" "#CCB76F" "#E3C188"
+ [8] "#F6C9A1" "#FFD2B9" "#FFDACF" "#FFE2E2" "#F1F1F1"
+> heat_hcl(12, c = c(80, 30), l = c(30, 90), power = c(1/5, 1.5))
+ [1] "#8E063B" "#A0323E" "#B04D41" "#C06544" "#CD7B48" "#D8904D" "#E0A455"
+ [8] "#E7B65E" "#EAC76A" "#EAD577" "#E8E188" "#E2E6BD"
+> rainbow_hcl(12)
+ [1] "#E495A5" "#DB9D85" "#C7A76C" "#ABB065" "#86B875" "#5CBD92" "#39BEB1"
+ [8] "#4CB9CC" "#7DB0DD" "#ACA4E2" "#CD99D8" "#E093C3"
+> desaturate(rainbow_hcl(12))
+ [1] "#ABABAB" "#ABABAB" "#ABABAB" "#ABABAB" "#ABABAB" "#ABABAB" "#ABABAB"
+ [8] "#ABABAB" "#ABABAB" "#ABABAB" "#ABABAB" "#ABABAB"
+> 
+> ## diverging red-blue colors
+> diverging_hsv(7)
+[1] "#0000FF" "#9C9CFF" "#D5D5FF" "#FFFFFF" "#FFD5D5" "#FF9C9C" "#FF0000"
+> diverging_hcl(7, c = 100, l = c(50, 90))
+[1] "#4A6FE3" "#97A3E2" "#C8CCE3" "#E2E2E2" "#E6C5CA" "#E38EA0" "#D33F6A"
+> desaturate(diverging_hsv(7))
+[1] "#4C4C4C" "#A6A6A6" "#D8D8D8" "#FFFFFF" "#DFDFDF" "#B7B7B7" "#7F7F7F"
+> desaturate(diverging_hcl(7, c = 100, l = c(50, 90)))
+[1] "#777777" "#A6A6A6" "#CDCDCD" "#E2E2E2" "#CDCDCD" "#A6A6A6" "#777777"
+> 
+> ## diverging cyan-magenta colors
+> diverging_hcl(7, h = c(180, 330), c = 59, l = c(75, 95))
+[1] "#0FCFC0" "#9CDED6" "#D5EAE7" "#F1F1F1" "#F3E1EB" "#F6C4E1" "#F79CD4"
+> desaturate(diverging_hcl(7, h = c(180, 330), c = 59, l = c(75, 95)))
+[1] "#B9B9B9" "#D2D2D2" "#E6E6E6" "#F1F1F1" "#E6E6E6" "#D2D2D2" "#B9B9B9"
+> 
+> ## heat and terrain colors
+> heat_hcl(12)
+ [1] "#D33F6A" "#D95260" "#DE6355" "#E27449" "#E6833D" "#E89331" "#E9A229"
+ [8] "#EAB12A" "#E9C037" "#E7CE4C" "#E4DC68" "#E2E6BD"
+> desaturate(heat_hcl(12))
+ [1] "#777777" "#808080" "#898989" "#939393" "#9C9C9C" "#A6A6A6" "#B0B0B0"
+ [8] "#BABABA" "#C4C4C4" "#CECECE" "#D8D8D8" "#E3E3E3"
+> terrain_hcl(12)
+ [1] "#26A63A" "#5FAB25" "#84B00E" "#A2B309" "#BDB723" "#D6BA40" "#ECBD5D"
+ [8] "#FFC07A" "#FFC497" "#FFC8B3" "#FFCFD0" "#F1F1F1"
+> desaturate(terrain_hcl(12))
+ [1] "#909090" "#999999" "#A2A2A2" "#AAAAAA" "#B3B3B3" "#BBBBBB" "#C4C4C4"
+ [8] "#CCCCCC" "#D0D0D0" "#D4D4D4" "#DADADA" "#F1F1F1"
+> 
+> ## different interfaces
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, palette = "Pastel 1"))
+[1] TRUE
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, h = 0, c = 35, l = 85))
+[1] TRUE
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, h = c(0, 300), c = 35, l = 85))
+[1] TRUE
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, h = c(0, NA), c = 35, l = 85))
+[1] TRUE
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, h1 = 0, c1 = 35, l1 = 85))
+[1] TRUE
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, h1 = 0, h2 = NA, c1 = 35, l1 = 85))
+[1] TRUE
+> identical(qualitative_hcl(6, "Pastel 1"),  qualitative_hcl(6, h1 = 0, h2 = 300, c1 = 35, l1 = 85))
+[1] TRUE
+> identical(sequential_hcl(7, "Grays"),      sequential_hcl(7, palette = "Grays"))
+[1] TRUE
+> identical(sequential_hcl(7, "Grays"),      sequential_hcl(7, h = 0, c = 0, l = c(15, 98), power = 1.3))
+[1] FALSE
+> identical(sequential_hcl(7, "Grays"),      sequential_hcl(7, h = 0, c. = 0, l = c(15, 98), power = 1.3))
+[1] FALSE
+> identical(sequential_hcl(7, "Grays"),      sequential_hcl(7, c1 = 0, c2 = 0, l1 = 15, l2 = 98, p1 = 1.3))
+[1] FALSE
+> identical(sequential_hcl(7, "Red-Yellow"), sequential_hcl(7, palette = "Red-Yellow"))
+[1] TRUE
+> identical(sequential_hcl(7, "Red-Yellow"), sequential_hcl(7, h = c(10, 85), c = c(80, 10), l = c(25, 95), power = c(0.4, 1.3)))
+[1] TRUE
+> identical(sequential_hcl(7, "Red-Yellow"), sequential_hcl(7, h = c(10, 85), c. = c(80, 10), l = c(25, 95), power = c(0.4, 1.3)))
+[1] TRUE
+> identical(sequential_hcl(7, "Red-Yellow"), sequential_hcl(7, h1 = 10, h2 = 85, c1 = 80, c2 = 10, l1 = 25, l2 = 95, p1 = 0.4, p2 = 1.3))
+[1] TRUE
+> identical(diverging_hcl(7, "Blue-Red 3"),  diverging_hcl(7, palette = "Blue-Red 3"))
+[1] TRUE
+> identical(diverging_hcl(7, "Blue-Red 3"),  diverging_hcl(7, h = c(265, 12), c = 80, l = c(25, 95), power = 0.7))
+[1] FALSE
+> identical(diverging_hcl(7, "Blue-Red 3"),  diverging_hcl(7, h1 = 265, h2 = 12, c1 = 80, l1 = 25, l2 = 95, p1 = 0.7))
+[1] FALSE
+> 
+> proc.time()
+   user  system elapsed 
+  0.413   0.025   0.418 

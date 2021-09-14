@@ -25,7 +25,7 @@ g2 <- q * s + q* r
 g3 <- s * r
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ### Combining graphs
 
@@ -37,7 +37,7 @@ The `+` operator overlays graphs.
 g1 + g2
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
 #### Connecting graphs ( \* )
 
@@ -48,7 +48,7 @@ each vertex in the second graph.
 g1 * g3
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 #### The Cartesian product ( %x% )
 
@@ -58,7 +58,7 @@ The `%x%` operator creates the graph product.
 x %x% y
 ```
 
-<img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
 ### Some more on vertices
 
@@ -134,7 +134,7 @@ Here’s a simple example:
 v("X1") * e("E:X1.X2") * v("X2")
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" />
 
 This provides a framework for constructing and simulating data from
 DAGs.
@@ -147,25 +147,29 @@ x2 <- v("x2", form = quo(rnorm(1,100,15)))
 
 reg <-   (sumv(x1*e(.5), x2*e(.3))*y) + ((z1*sumv(e(.4)*x1, e(.3)*y))) 
 
-plot(reg)
+reg <-      ( x1*e(.5) + x2*e(.3)) * y  + 
+       z1 * ( e(.4)*x1 +  e(.3)*y)
+
+empty_graph <- v("") %>% filter(row_number() < 1)
+ggraph(empty_graph) + plot(reg) + ggraph(empty_graph)
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-22-1.png" width="100%" />
 
 ``` r
 ralget_sim(reg, 1000)
 #> # A tibble: 1,000 x 4
 #>       x2    z1    x1     y
 #>    <dbl> <dbl> <dbl> <dbl>
-#>  1 104.  113.   147.  131.
-#>  2 106.  106.   121.  157.
-#>  3 106.   88.5  127.  134.
-#>  4 113.  127.   160.  183.
-#>  5  90.9  97.3  154.  122.
-#>  6 101.  102.   162.  161.
-#>  7 119.   94.8  155.  126.
-#>  8  80.9 122.   144.  141.
-#>  9  94.6  92.3  154.  118.
-#> 10  92.3  91.2  143.  118.
+#>  1  82.3  98.6  140.  142.
+#>  2 120.  103.   146.  173.
+#>  3 137.  103.   137.  158.
+#>  4  93.0 110.   132.  146.
+#>  5 109.  102.   143.  135.
+#>  6 107.  115.   138.  144.
+#>  7  96.6 104.   123.  114.
+#>  8  77.9  95.1  157.  155.
+#>  9  98.6 102.   134.  152.
+#> 10 112.  124.   144.  136.
 #> # … with 990 more rows
 ```

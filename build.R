@@ -9,3 +9,5 @@ devtools::document()
 remove.packages("ralget")
 library(ralget)
 
+install.packages("tictoc")
+install.packages("boot")

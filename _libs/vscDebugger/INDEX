@@ -1,0 +1,7 @@
+.vsc.debugSource        Modified version of 'base::source'
+.vsc.load_all           Modified version of 'pkgload::load_all()'
+.vsc.onError            Error handler
+.vsc.refreshBreakpoints
+                        Refresh Breakpoints
+outputOverwrites        Modified Output Functions
+vscDebugger-package     vscDebugger

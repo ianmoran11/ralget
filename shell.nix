@@ -13,6 +13,7 @@ let
       devtools
       patchwork
       rmarkdown
+      stringi
       microbenchmark
     ];
   };

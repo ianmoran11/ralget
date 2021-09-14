@@ -15,7 +15,7 @@ render <- function(x,y,n){
 #' simulate data from a ralget 
 #'
 #' @param graph ralget
-#' @param n number of observations
+#' @param n ralget
 #' @export
 
 ralget_sim <- function(graph, n = 1){
@@ -24,7 +24,7 @@ ralget_sim <- function(graph, n = 1){
 intermediate <- 
 graph  %>% mutate(form = map_chr(row_number(), 
 ~ filter(.E(), to == .x) %>% as_tibble() %>% mutate(out = paste(.attrs, from_name, sep = "*"))  %>% 
-pull(out) %>% paste(collape = " * ")
+pull(out) %>% paste(collapse = " + ")
  # mutate(form = map2(from_name, .attr, ~paste(.x,.y[[1]],sep ="*"))
  )) %>%
  mutate(init = map_chr(.attrs, ~ .x %>% as.character() %>%  str_remove("~"))) %>%
