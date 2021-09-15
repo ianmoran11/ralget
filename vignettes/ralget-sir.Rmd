@@ -126,9 +126,10 @@ plot(S)
 crossing(l1 = letters[1:3],l2 = letters[1:3]) %>%
 mutate(comb = map2_chr(l1,l2, ~ sort(c(.x,.y)) %>% 
               paste(collapse =""))) %>% 
-group_by(comb) %>% filter(row_number() == 1) %>%
-mutate(migration = ifelse(l1==l2,.95, abs(rnorm(1,.01,.03)))) %>%   
-ungroup(comb) %>% select(-comb) %>% spread(l1,migration)
+mutate(migration = ifelse(l1==l2,.95, abs(rnorm(nrow(.),.01,.10)))) %>%   
+group_by(l1) %>% 
+mutate(migration = migration / sum( migration)) %>%
+select(-comb) %>% spread(l1,migration)
 
 
 
