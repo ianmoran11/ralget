@@ -3,8 +3,10 @@ title: "A simple SIR model with Ralget"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{A simple SIR model with Ralget}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -16,6 +18,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+rm(list = ls())
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
@@ -30,12 +33,18 @@ function(to = c("I-Mi","I-Mj","I-Mk"),
          from =c("I-1i","I-1j","I-1k"), 
          persistence, 
          migration){
-    crossing(l1 = to,l2=from) %>%
+# to = c("a_S02","b_S02")
+# from = c("a_S03","b_S03")
+# persistence = .95
+# migration = .10 
+ d1 <-  
+    tidyr::crossing(l1 = to,l2=from) %>%
     mutate(comb = map2_chr(l1,l2, ~ sort(c(.x,.y)) %>% 
-                paste(collapse =""))) %>% 
+                paste(collapse ="")))  
+ d1 %>% 
     mutate(migration = 
-                ifelse(str_sub(l1,4,4)==str_sub(l2,4,4),
-                persistence, abs(rnorm(nrow(.),.01,migration)))) %>%   
+                ifelse(str_remove_all(l1,"[0-9]+")==str_remove_all(l2,"[0-9]+"),
+                persistence, abs(rnorm(nrow(d1),.01,migration)))) %>%   
     group_by(l1) %>% 
     mutate(migration = migration / sum( migration)) %>%
     select(-comb) %>%
@@ -64,11 +73,12 @@ increment_t <- function(g, t = 1){
 ```{r}
 # Initial conditions
 S00 <- v("S00", .func = const(10000))
-I00 <- v("I00", .func = const(10))
+I00 <- v("I00", .func = const(100))
 R00 <- v("R00", .func = const(0))
 # First period states 
 S01 <- v("S01", .func = sum)
 I01 <- v("I01", .func = sum)
+b_I01 <- v("b_I01", .func = sum)
 R01 <- v("R01", .func = sum)
 # Transition states 
 BIS01 <- v("BIS01", .func = product)
@@ -107,10 +117,12 @@ S03 + I03 + R03
 
 SIR01 <- SIR0 + SIR
 SIR01 <- map(letters[1:2],~ prefix(SIR0 + SIR, .x)) %>% reduce(`+`) 
+SIR03 <- map(letters[1:2],~ prefix(SIR, .x)) %>% reduce(`+`) 
 
-mig_s <- migration_matrix(c("a_S02","b_S02"),c("a_S03","b_S03"), .95,.10) %>% 
+mig_s <- migration_matrix(c("a_S02","b_S02"),c("a_S03","b_S03"), .55,.001) %>% 
          pull(vert) %>% reduce(`+`) %>%
          mutate(.attrs = map(1,~ list(.func = sum)))
+
 
 mig_i <- migration_matrix(c("a_I02","b_I02"),c("a_I03","b_I03"), .95,.10) %>% 
          pull(vert) %>% reduce(`+`) %>%
@@ -120,35 +132,28 @@ mig_r <- migration_matrix(c("a_R02","b_R02"),c("a_R03","b_R03"), .95,.10) %>%
          pull(vert) %>% reduce(`+`) %>%
          mutate(.attrs = map(1,~ list(.func = sum)))
 
-plot(SIR01 + mig_s + mig_i + mig_r) 
-
 sirtm <- SIR01 + mig_s + mig_i + mig_r
-devtools::load_all()
-sirtm_p <- sirtm %>% evaluate_prepare()  
+plot(sirtm) 
 
+sirt <- SIR03 + mig_s + mig_i + mig_r
+sirt2 <- map(seq(2,100,2),increment_t, g = sirt) %>% reduce(`+`)
 
-evaluate_execute(sirtm_p)
+i00n <- v("i00", .func = const(-100)) * m(1) * b_I01 
 
-%>% as_tibble() %>% print(n = Inf)
+sirt_f <- sirtm + sirt2 + i00n
+# plot(sirt_f)
+sirtm_p <- sirt_f %>% get_edge_names() %>% activate("nodes") %>% evaluate_prepare()  
+
+result <- 
+sirtm_p %>% get_edge_names() %>% activate("nodes") %>% evaluate_execute() 
 
 
 ```
-
-
-```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=6, fig.width=14.5}
-# Connect 150 cycles end to end
-SIR_FULL <- 
-    SIR0 + 
-    SIR + 
-    map(1:150,~ increment_t(SIR,.x)) %>% reduce(`+`)
-```
-
-
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=7}
 ## Extract Data
 A <- 
-SIR_FULL %>% get_edge_names() %>% activate("nodes") %>% evaluate() %>%
+result %>%
 mutate(r = map_dbl(eval_statement, ~ .x)) %>% 
 as_tibble() %>% 
 select(name, r) %>% 
@@ -158,9 +163,11 @@ spread(name,r)
 
 ## Plot
 A %>% gather(key,value, -t) %>% 
+  mutate(city = str_extract(key,"[a-z]")) %>%
+  mutate(key = str_remove(key,"[a-z]_")) %>%
 ggplot(aes(x = as.numeric(t),y = value, color = key )) + 
 geom_line() + 
-geom_point()
+geom_point() + facet_wrap(~city)
 ```
 
 
