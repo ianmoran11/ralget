@@ -58,24 +58,28 @@ evaluate_prepare <- function(g){
 
 evaluate_execute <- function(g){
 
+        browser()
 g %>% 
     mutate(eval_statement = pmap(  
         list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args), 
         .f = function(...){
-        #browser()
+        browser()
             wk <- list(...)
             assign(
                 x = wk$name,
                 value =  
                     do.call(
                         wk$.attrs$.func, 
-                        map2(wk$edge_funcs,wk$edge_args, ~ do.call(.x[[1]], list(sym(.y))))
+                        map2(wk$edge_funcs,
+                             wk$edge_args, 
+                             function(x,y){
+                                browser()
+                                do.call(x[[1]], list(sym(y)))
+                             })
                         ),
-                envir = .GlobalEnv)
+                envir = parent.env(environment()))
                 }
-        )
+    )
     ) 
-
 }
-
 
