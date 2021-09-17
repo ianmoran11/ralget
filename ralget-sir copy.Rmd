@@ -73,7 +73,7 @@ increment_t <- function(g, t = 1){
 ```{r}
 # Initial conditions
 S00 <- v("S00", .func = const(10000))
-I00 <- v("I00", .func = const(100))
+I00 <- v("I00", .func = const(0))
 R00 <- v("R00", .func = const(0))
 # First period states 
 S01 <- v("S01", .func = sum)
@@ -116,19 +116,21 @@ G     * (m(1) * GI01) +
 S03 + I03 + R03
 
 SIR01 <- SIR0 + SIR
-SIR01 <- map(letters[1:2],~ prefix(SIR0 + SIR, .x)) %>% reduce(`+`) 
-SIR03 <- map(letters[1:2],~ prefix(SIR, .x)) %>% reduce(`+`) 
+SIR01 <- map(letters[1:10],~ prefix(SIR0 + SIR, .x)) %>% reduce(`+`) 
+SIR03 <- map(letters[1:10],~ prefix(SIR, .x)) %>% reduce(`+`) 
 
-mig_s <- migration_matrix(c("a_S02","b_S02"),c("a_S03","b_S03"), .55,.001) %>% 
+m01 <- SIR %>% pull(name) %>% purrr::keep(str_detect(.,"02")) %>% map(~ paste0(letters[1:10],"_",.x))
+m02 <- SIR %>% pull(name) %>% purrr::keep(str_detect(.,"03")) %>% map(~ paste0(letters[1:10],"_",.x))
+
+mig_s <- migration_matrix(m01[[1]],m02[[1]], .55,.001) %>% 
          pull(vert) %>% reduce(`+`) %>%
          mutate(.attrs = map(1,~ list(.func = sum)))
 
-
-mig_i <- migration_matrix(c("a_I02","b_I02"),c("a_I03","b_I03"), .95,.10) %>% 
+mig_i <- migration_matrix(m01[[2]],m02[[2]], .55,.001) %>% 
          pull(vert) %>% reduce(`+`) %>%
          mutate(.attrs = map(1,~ list(.func = sum)))
 
-mig_r <- migration_matrix(c("a_R02","b_R02"),c("a_R03","b_R03"), .95,.10) %>% 
+mig_r <- migration_matrix(m01[[3]],m02[[3]], .55,.001) %>% 
          pull(vert) %>% reduce(`+`) %>%
          mutate(.attrs = map(1,~ list(.func = sum)))
 
@@ -136,17 +138,18 @@ sirtm <- SIR01 + mig_s + mig_i + mig_r
 plot(sirtm) 
 
 sirt <- SIR03 + mig_s + mig_i + mig_r
-sirt2 <- map(seq(2,100,2),increment_t, g = sirt) %>% reduce(`+`)
 
-i00n <- v("i00", .func = const(-100)) * m(1) * b_I01 
+sirt2 <- map(seq(2,200,2),increment_t, g = sirt) %>% reduce(`+`)
+
+i00n <- v("i00", .func = const(100)) * m(1) * b_I01 
 
 sirt_f <- sirtm + sirt2 + i00n
 # plot(sirt_f)
 sirtm_p <- sirt_f %>% get_edge_names() %>% activate("nodes") %>% evaluate_prepare()  
-
+t1 <- Sys.time()
 result <- 
 sirtm_p %>% get_edge_names() %>% activate("nodes") %>% evaluate_execute() 
-
+t2 <- Sys.time()
 
 ```
 
