@@ -150,7 +150,7 @@ t1 <- Sys.time()
 result <- 
 sirtm_p %>% get_edge_names() %>% activate("nodes") %>% evaluate_execute() 
 t2 <- Sys.time()
-
+t2 - t1
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=7}
@@ -172,54 +172,3 @@ ggplot(aes(x = as.numeric(t),y = value, color = key )) +
 geom_line() + 
 geom_point() + facet_wrap(~city)
 ```
-
-
-```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=6, fig.width=14.5}
-# Connect 150 cycles end to end
-S01
-S02
-
-S01i <- map(letters[1:3],~ v(paste0("S0",.x))) %>% reduce(`+`)
-S02i <- map(letters[1:3],~ v(paste0("S1",.x))) %>% reduce(`+`)
-
-S <- S01i*S02i
-class(S) <- class(S)[-1]
-plot(S)
-
-crossing(l1 = letters[1:3],l2 = letters[1:3]) %>%
-mutate(comb = map2_chr(l1,l2, ~ sort(c(.x,.y)) %>% 
-              paste(collapse =""))) %>% 
-mutate(migration = ifelse(l1==l2,.95, abs(rnorm(nrow(.),.01,.10)))) %>%   
-group_by(l1) %>% 
-mutate(migration = migration / sum( migration)) %>%
-select(-comb) %>% spread(l1,migration)
-
-
-
-mig_m <- migration_matrix(c("a_S02","b_S02"),c("a_S03","b_S03"), .95,.10) %>% 
-         pull(vert) %>% reduce(`+`)
-
-
-plot(mig_m)
-letters[1:3] %>% map(~ .x %>% paste0(letters[1:3])) %>% unlist()
-
-S %>% get_edge_names() %>%
-mutate(change = )
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
