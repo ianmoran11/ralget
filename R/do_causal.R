@@ -4,10 +4,10 @@
 #' @param p assignment expressions for node in DAG
 #' @export
 
-do_causal <-function(graph,p){
+do_causal <-function(graph,...){
  #browser()
 
-l <- list(p)
+l <- list(...)
 var = names(l)
 val = l[[1]]
 

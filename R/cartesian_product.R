@@ -14,7 +14,7 @@
 
 cartesian_product <- function(x,y){
 
-# browser()
+ # browser()
 
   tmp <-
     crossing(x = as_tibble(x) %>% pull(name),
@@ -45,8 +45,8 @@ cartesian_product <- function(x,y){
   combo_filtered %>% 
   select(src,trg, x_src, y_src) %>% 
   as_tbl_graph()  %>%  
-  mutate(x_src = map_chr(row_number(),~ .E()%>% filter(from == .x) %>% pull(x_src)  %>% .[[1]])) %>%
-  mutate(y_src = map_chr(row_number(),~ .E()%>% filter(from == .x) %>% pull(y_src)  %>% .[[1]])) %>%
+  mutate(x_src = map_chr(row_number(),possibly(~ .E()%>% filter(from == .x) %>% pull(x_src)  %>% .[[1]],NA_character_))) %>%
+  mutate(y_src = map_chr(row_number(),possibly(~ .E()%>% filter(from == .x) %>% pull(y_src)  %>% .[[1]],NA_character_))) %>%
   as_tibble() %>% 
   left_join(x, by = c("x_src" = "name"), copy = T,  suffix = c("",".x"))  %>% 
   left_join(y, by = c("y_src" = "name"), copy = T,  suffix = c("",".y")) 
