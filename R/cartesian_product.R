@@ -26,7 +26,6 @@ cartesian_product <- function(x,y){
   x_edges <- x %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))
   y_edges <- y %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))
 
-
   combo_filtered <-
     combo %>%
     mutate(x_links= map2(x_src,x_trg, ~ list(.x,.y))) %>%
@@ -38,6 +37,35 @@ cartesian_product <- function(x,y){
     mutate(new_link = y_new_link | x_new_link ) %>%
     filter(new_link)
 
-  combo_filtered %>% select(src,trg) %>% as_tbl_graph()
+ nodes_df <-  
+  combo_filtered %>% 
+  select(src,trg, x_src, y_src) %>% 
+  as_tbl_graph()  %>%  
+  mutate(x_src = map_chr(row_number(),~ .E()%>% filter(from == .x) %>% pull(x_src)  %>% .[[1]])) %>%
+  mutate(y_src = map_chr(row_number(),~ .E()%>% filter(from == .x) %>% pull(y_src)  %>% .[[1]])) %>%
+  as_tibble() %>% 
+  left_join(x, by = c("x_src" = "name"), copy = T,  suffix = c("",".x"))  %>% 
+  left_join(y, by = c("y_src" = "name"), copy = T,  suffix = c("",".y"))  %>% 
+  mutate(.attrs = map2(.attrs,.attrs.y, function(x,y){append(x,y)})) %>%
+  select(name, .attrs)
 
-}
+x_edges <- x %>% activate("edges") %>% get_edge_names() %>% as_tibble()
+y_edges <- y %>% activate("edges") %>% get_edge_names() %>% as_tibble()
+
+edges_df <-
+ combo_filtered %>% 
+   select(src,trg, x_src,x_trg,y_src,y_trg) %>% 
+   as_tbl_graph() %>%
+   activate("edges") %>%
+   left_join(as_tibble(x_edges), by = c("x_src" = "from_name", "x_trg" = "to_name"),
+    copy = T,  suffix = c("",".x"))  %>% 
+   left_join(as_tibble(y_edges), by = c("y_src" = "from_name", "y_trg" = "to_name"),
+    copy = T,  suffix = c("",".y")) %>%
+  mutate(.attrs = map2(.attrs,.attrs.y, function(x,y){append(x,y)})) %>%
+  select(from,to,x_src, x_trg, y_src,y_trg,.attrs)
+
+  return_df <- edges_df %>% activate("nodes") %>% left_join(nodes_df)
+
+  return_df
+
+  }

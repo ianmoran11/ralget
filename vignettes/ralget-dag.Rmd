@@ -15,12 +15,14 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+rm(list = ls())
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
 library(patchwork)
 library(magrittr)
 library(ralget)
+devtools::load_all()
 ```
 
 
@@ -29,39 +31,32 @@ library(ralget)
 product <- function(...) {list(...) %>% reduce(`*`)}
 b <- function(m){ e(.func = function(.value){.value * m})}
 const <- function(x){function(...){x}}
-increment_t <- function(g, t = 1){
-  g %>% 
-  mutate(name = 
-    str_extract(name,"[0-9]+$") %>% as.numeric() %>% `+`(t) %>% 
-    as.character() %>% str_pad(2,"left", "0") %>% 
-    str_remove("NA") %>% 
-    paste0(str_remove(name,"[0-9]+$"),.) %>% str_remove("NA"))
-}
 ```
 
 
 ```{r}
-Y <-  v("Y", .func = function(...){rnorm(10000,list(...)[[1]] + list(...)[[2]], 10)})
-X1 <- v("X1",.func = function(...){rnorm(10000,sum(...) + 100, 10)})
-X2 <- v("X2",.func = function(...){rnorm(10000,sum(...) + 100, 10)})
+Y <-  v("Y", .func = function(...){rnorm(10^3,rsum(...), 10)})
+X1 <- v("X1",.func = function(...){rnorm(10^3,rsum(...), 10)})
+X2 <- v("X2",.func = function(...){rnorm(10^3,rsum(...), 10)})
+Z1 <- v("Z1",.func = function(...){rnorm(10^3,rsum(...), 10)})
 ```
 
 
 ```{r}
-g <- X1*b(1)*Y + X2*b(1)*Y
+g <- 
+   X1 * b(1) * Y + X2*b(1)*Y  +
+   Z1*b(1)*Y + Z1*b(1)*X2 
 class(g) <- class(g)[-1]
-plot(g)
 ```
 
 
 ```{r}
 data <- 
-evaluate(g) %>% as_tibble() %>% unnest(eval_statement) %>%
-group_by(name) %>% mutate(sim_id = row_number()) %>%
-select(name, sim_id, value = eval_statement) %>%
-spread(name, value)
+evaluate(g) %>% evaluate() %>% extract_data()
+plot(g)
 
-data
+g %>% do_causal(X2 = 2) %>% evaluate() %>% extract_data()
+
 ```
 
 
@@ -70,6 +65,10 @@ t <- (v("t1")*v("t2")) +
      (v("t2")*v("t3")) + 
      (v("t3")*v("t4")) + 
      (v("t4")*v("t5"))
+
+t <- t %>% activate("edges") %>% 
+     mutate(.attrs = list(1)) %>% 
+     activate("nodes")
 ```
 
 ```{r}
@@ -94,9 +93,5 @@ mutate(.attrs = purrr::map(1, ~ b(1)))  %>%
 activate("nodes") %>% get_edge_names() %>% 
 activate("nodes") 
 
-data <- 
-evaluate(lt) %>% as_tibble() %>% unnest(eval_statement) %>%
-group_by(name) %>% mutate(sim_id = row_number()) %>%
-select(name, sim_id, value = eval_statement) %>%
-spread(name, value)
+data <- evaluate(lt) %>% extract_data()
 ```

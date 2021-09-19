@@ -46,9 +46,7 @@ evaluate_prepare <- function(g){
     mutate(order = node_topo_order())  %>%
     arrange(order) %>%
     mutate(edge_funcs = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(.attrs) )) %>%
-    mutate(edge_args = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(from_name) ))
-
-
+    mutate(edge_args = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(from_name)))
 }
 
 #' Evaluate a graph where nodes and edges store functions.2
@@ -58,7 +56,6 @@ evaluate_prepare <- function(g){
 
 evaluate_execute <- function(g){
 
-        # browser()
 g %>%
     mutate(eval_statement = pmap(
         list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args),
@@ -72,7 +69,6 @@ g %>%
                         map2(wk$edge_funcs,
                              wk$edge_args,
                              function(x,y){
-                               # browser()
                                 do.call(x[[1]], list(sym(y)))
                              })
                         ),
