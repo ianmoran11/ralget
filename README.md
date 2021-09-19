@@ -82,48 +82,6 @@ v("x", Latitude=  78.26077, Longitude=  -94.11077)
 #> # … with 2 variables: from <int>, to <int>
 ```
 
-### Installation
-
-You can install the development version from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("ianmoran11/ralget")
-```
-
-## Algegraic laws
-
-### Addition is commutative
-
-*V*<sub>1</sub> + *V*<sub>2</sub> = *V*<sub>2</sub> + *V*<sub>1</sub>
-
-``` r
-(v1+v2)==(v2+v1)
-#> [1] TRUE
-```
-
-*V*<sub>1</sub> × *V*<sub>2</sub> ≠ *V*<sub>2</sub> × *V*<sub>1</sub>
-
-``` r
-(v1*v2)==(v2*v1)
-#> [1] FALSE
-```
-
-### Multiplication is distributive
-
-``` r
-(v1*(v2+v3))==((v1*v2)+(v1*v3))
-#> [1] TRUE
-```
-
-*V*<sub>1</sub> × (*V*<sub>2</sub>+*V*<sub>3</sub>) = *V*<sub>1</sub> × *V*<sub>2</sub> + *V*<sub>1</sub> × *V*<sub>3</sub>
-
-``` r
-((v2+v3)*v1)==((v2*v1)+(v3*v1))
-#> [1] TRUE
-```
-
 ### Edges
 
 Edge attributes are added by interleaving e() between graph
@@ -135,42 +93,14 @@ Here’s a simple example:
 v("X1") * e("E:X1.X2") * v("X2")
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
 
-This provides a framework for constructing and simulating data from
-DAGs.
+### Installation
 
-``` r
-z1 <- v("z1", form = quo(rnorm(1,100,15)))
-x1 <- v("x1", form = quo(rnorm(1,100,15)))
-x2 <- v("x2", form = quo(rnorm(1,100,15)))
- y <- v("y", form = quo(rnorm(1,0,15)))
-
-reg <-   (sumv(x1*e(.5), x2*e(.3))*y) + ((z1*sumv(e(.4)*x1, e(.3)*y))) 
-
-reg <-      ( x1*e(.5) + x2*e(.3)) * y  + 
-       z1 * ( e(.4)*x1 +  e(.3)*y)
-
-empty_graph <- v("") %>% filter(row_number() < 1)
-ggraph(empty_graph) + plot(reg) + ggraph(empty_graph)
-```
-
-<img src="man/figures/README-unnamed-chunk-22-1.png" width="100%" />
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
-ralget_sim(reg, 1000)
-#> # A tibble: 1,000 x 4
-#>       x2    z1    x1     y
-#>    <dbl> <dbl> <dbl> <dbl>
-#>  1 104.   90.4  128. 105. 
-#>  2  79.9  87.4  146. 160. 
-#>  3  94.2  62.5  111.  93.5
-#>  4 115.  103.   138. 120. 
-#>  5 110.  100.   140. 105. 
-#>  6 104.  130.   157. 136. 
-#>  7  76.1  94.6  155. 128. 
-#>  8  85.3  86.8  130. 120. 
-#>  9 101.  109.   131. 130. 
-#> 10 104.  108.   111. 116. 
-#> # … with 990 more rows
+# install.packages("devtools")
+devtools::install_github("ianmoran11/ralget")
 ```

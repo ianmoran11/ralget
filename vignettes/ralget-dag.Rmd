@@ -22,76 +22,45 @@ library(ggraph)
 library(patchwork)
 library(magrittr)
 library(ralget)
-devtools::load_all()
+library(ggforce)
+```
+
+### Specify how nodes generate data and evaluate inputs
+```{r}
+a <- v("a", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+c <- v("c", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+x <- v("x", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+y <- v("y", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+m <- v("m", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
 ```
 
 
-```{r}
-# Add helper functions
-product <- function(...) {list(...) %>% reduce(`*`)}
-b <- function(m){ e(.func = function(.value){.value * m})}
-const <- function(x){function(...){x}}
+### Declare causal connections
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=3, fig.width=7}
+g <-
+ (a * b(1) + m * b(5)) * x +
+ (c * b(2) + m * b(1)) * y +
+ (a * b(3) + c * b(4)) * m
+
+ g %>% dag_plot()
 ```
 
 
+### Simulate data from DAG
 ```{r}
-Y <-  v("Y", .func = function(...){rnorm(10^3,rsum(...), 10)})
-X1 <- v("X1",.func = function(...){rnorm(10^3,rsum(...), 10)})
-X2 <- v("X2",.func = function(...){rnorm(10^3,rsum(...), 10)})
-Z1 <- v("Z1",.func = function(...){rnorm(10^3,rsum(...), 10)})
+g %>% simulate(label = "Obs")
+g %>% do_causal(a =  0) %>% simulate("do(a = -1)")
+g %>% do_causal(a =  1) %>% simulate("do(a =  1)")
 ```
 
-
+### Generate data from DAG
 ```{r}
-g <- 
-   X1 * b(1) * Y + X2*b(1)*Y  +
-   Z1*b(1)*Y + Z1*b(1)*X2 
-class(g) <- class(g)[-1]
+obs <- g %>% simulate(label = "Observational")
+do0 <- g %>% do_causal(a = -1) %>% simulate(label = "do(a = -1)")
+do1 <- g %>% do_causal(a =  1) %>% simulate(label = "do(a =  1)")
 ```
 
-
-```{r}
-data <- 
-evaluate(g) %>% evaluate() %>% extract_data()
-plot(g)
-
-g %>% do_causal(X2 = 2) %>% evaluate() %>% extract_data()
-
-```
-
-
-```{r}
-t <- (v("t1")*v("t2")) +
-     (v("t2")*v("t3")) + 
-     (v("t3")*v("t4")) + 
-     (v("t4")*v("t5"))
-
-t <- t %>% activate("edges") %>% 
-     mutate(.attrs = list(1)) %>% 
-     activate("nodes")
-```
-
-```{r}
-l <- g %x% t
-plot(l)
-```
-
-```{r}
-lt <- 
-l %>% mutate(name = str_remove(name, "\\-.+")) %>% 
-graph_join(g) %>% 
-activate("edges") %>%
-mutate(.attrs = purrr::map(1, ~ b(1)))  %>%
-activate("nodes") %>% get_edge_names() %>% 
-activate("nodes")
-
-lt <- 
-l %>% 
-mutate(.attrs = purrr::map(1, ~ list(.func = function(...){rnorm(10,sum(...) + 100, 10)}))) %>%
-activate("edges") %>%
-mutate(.attrs = purrr::map(1, ~ b(1)))  %>%
-activate("nodes") %>% get_edge_names() %>% 
-activate("nodes") 
-
-data <- evaluate(lt) %>% extract_data()
+### Compare intervention distributions
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=5, fig.width=7}
+bind_rows(obs, do0, do1) %>% plot_joint_distributions()
 ```

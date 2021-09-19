@@ -9,7 +9,7 @@ ralget_sim(graph, n = 1)
 \arguments{
 \item{graph}{ralget}
 
-\item{n}{number of observations}
+\item{n}{ralget}
 }
 \description{
 simulate data from a ralget
