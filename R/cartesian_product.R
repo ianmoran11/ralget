@@ -13,6 +13,9 @@
 #' @export
 
 cartesian_product <- function(x,y){
+
+# browser()
+
   tmp <-
     crossing(x = as_tibble(x) %>% pull(name),
              y = as_tibble(y) %>% pull(name)) %>%
@@ -23,6 +26,7 @@ cartesian_product <- function(x,y){
       crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("src" = "new_name")) %>% set_names(c("src","trg","x_src","y_src")),
       crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("trg" = "new_name"))  %>% select(-src,-trg) %>% set_names(c("x_trg","y_trg"))
     )
+
   x_edges <- x %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))
   y_edges <- y %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))
 
@@ -45,9 +49,7 @@ cartesian_product <- function(x,y){
   mutate(y_src = map_chr(row_number(),~ .E()%>% filter(from == .x) %>% pull(y_src)  %>% .[[1]])) %>%
   as_tibble() %>% 
   left_join(x, by = c("x_src" = "name"), copy = T,  suffix = c("",".x"))  %>% 
-  left_join(y, by = c("y_src" = "name"), copy = T,  suffix = c("",".y"))  %>% 
-  mutate(.attrs = map2(.attrs,.attrs.y, function(x,y){append(x,y)})) %>%
-  select(name, .attrs)
+  left_join(y, by = c("y_src" = "name"), copy = T,  suffix = c("",".y")) 
 
 x_edges <- x %>% activate("edges") %>% get_edge_names() %>% as_tibble()
 y_edges <- y %>% activate("edges") %>% get_edge_names() %>% as_tibble()
@@ -61,8 +63,7 @@ edges_df <-
     copy = T,  suffix = c("",".x"))  %>% 
    left_join(as_tibble(y_edges), by = c("y_src" = "from_name", "y_trg" = "to_name"),
     copy = T,  suffix = c("",".y")) %>%
-  mutate(.attrs = map2(.attrs,.attrs.y, function(x,y){append(x,y)})) %>%
-  select(from,to,x_src, x_trg, y_src,y_trg,.attrs)
+    select(-matches("from|to|src|trg|new"))
 
   return_df <- edges_df %>% activate("nodes") %>% left_join(nodes_df)
 
