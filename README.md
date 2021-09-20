@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+** Warning: ralget is in early development. Use for experimentation only. **
+
 # ralget
 
 Ralget creates and combines graphs with algebraic operations.

@@ -15,6 +15,9 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+** Warning: ralget is in early development. Use for experimentation only. **
+
 # ralget
 Ralget creates and combines graphs with algebraic operations. 
 
