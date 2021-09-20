@@ -27,11 +27,11 @@ library(ggforce)
 
 ### Specify how nodes generate data and evaluate inputs
 ```{r}
-a <- v("a", .func = ~ rnorm(n = 1000, mean = rsum(.x), sd = .5))
-c <- v("c", .f = ~ rnorm(n = 1000, mean = rsum(.x), sd = .5))
-x <- v("x", .f = ~ rnorm(n = 1000, mean = rsum(.x), sd = .5))
-y <- v("y", .f = ~ rnorm(n = 1000, mean = rsum(.x), sd = .5))
-m <- v("m", .f = ~ rnorm(n = 1000, mean = rsum(.x), sd = .5))
+a <- v("a", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+c <- v("c", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+x <- v("x", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+y <- v("y", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
+m <- v("m", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
 
 ```
 
