@@ -23,16 +23,16 @@ library(patchwork)
 library(magrittr)
 library(ralget)
 library(ggforce)
+d <- rlang::as_function
 ```
 
 ### Specify how nodes generate data and evaluate inputs
 ```{r}
-a <- v("a", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
-c <- v("c", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
-x <- v("x", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
-y <- v("y", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
-m <- v("m", .func = function(...){rnorm(n = 1000, mean = rsum(...), sd = .5)})
-
+a <- v("a", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+c <- v("c", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+x <- v("x", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+y <- v("y", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+m <- v("m", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
 ```
 
 
@@ -42,8 +42,6 @@ g <-
  (a * b(1) + m * b(5)) * x +
  (c * b(2) + m * b(1)) * y +
  (a * b(3) + c * b(4)) * m
-
- g %>% dag_plot()
 ```
 
 
