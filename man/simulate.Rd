@@ -4,7 +4,7 @@
 \alias{simulate}
 \title{Simulate data from a dag}
 \usage{
-simulate(g, label)
+simulate(g, label, seed = NULL)
 }
 \arguments{
 \item{g}{a ralget DAG}

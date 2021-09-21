@@ -5,4 +5,10 @@
 #' @param label the label associated with simulated data. 
 #' @export
 #' 
-simulate <- function(g,label){ g %>% evaluate() %>% extract_data() %>% mutate(label = label)}
+simulate <- function(g,label, seed = NULL){ 
+
+   if(!is.null(seed)){set.seed(seed)}
+
+    g %>% evaluate() %>% extract_data() %>% mutate(label = label)
+    
+    }

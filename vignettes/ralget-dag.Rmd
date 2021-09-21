@@ -36,30 +36,22 @@ m <- v("m", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
 ```
 
 
+
 ### Declare causal connections
 ```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=3, fig.width=7}
 g <-
- (a * b(1) + m * b(5)) * x +
- (c * b(2) + m * b(1)) * y +
- (a * b(3) + c * b(4)) * m
+ (a * b(1) + m * b(1)) * x +
+ (c * b(1) + m * b(1)) * y +
+ (a * b(1) + c * b(1)) * m
 
 dag_plot(g)
-
-```
-
-
-### Simulate data from DAG
-```{r}
-g %>% simulate(label = "Obs")
-g %>% do_causal(a =  0) %>% simulate("do(a = -1)")
-g %>% do_causal(a =  1) %>% simulate("do(a =  1)")
 ```
 
 ### Generate data from DAG
 ```{r}
 obs <- g %>% simulate(label = "Observational")
-do0 <- g %>% do_causal(a = -1) %>% simulate(label = "do(a = -1)")
-do1 <- g %>% do_causal(a =  1) %>% simulate(label = "do(a =  1)")
+do0 <- g %>% ralget::do(a = -1) %>% simulate(label = "do(a = -1)",seed = 1)
+do1 <- g %>% ralget::do(a =  1) %>% simulate(label = "do(a =  1)",seed = 1)
 ```
 
 ### Compare intervention distributions

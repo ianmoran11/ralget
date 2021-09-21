@@ -65,7 +65,7 @@ g %>%
                 x = wk$name,
                 value =
                     do.call(
-                        wk$.attrs$.func,
+                        wk$.attrs$.f,
                         map2(wk$edge_funcs,
                              wk$edge_args,
                              function(x,y){

@@ -3,12 +3,14 @@
 #' @param ... a list of vectors 
 #' @export
 #' 
-rsum <- function(...){
-  # browser()
+unsafe_rsum <- function(...){
+  #browser()
 
-r <- tryCatch(list(...), error = return(0),warning = return(2) ,finally =return(3))
+# lengthp <- possibly(length, return(0))
 
-if(r == 0){return(0)}
+# lengthp(list(...))
+
+#if(r == 0){return(0)}
 
   olst <- list(...)
 
@@ -21,3 +23,10 @@ if(r == 0){return(0)}
    return(unlist(pmap(olst, sum)))
   }
   }
+
+#' Vector addition
+#'
+#' @param ... a list of vectors 
+#' @export
+#' 
+rsum <- purrr::possibly(unsafe_rsum,0)

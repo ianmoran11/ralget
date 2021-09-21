@@ -4,7 +4,7 @@
 #' @param p assignment expressions for node in DAG
 #' @export
 
-do_causal <-function(graph,...){
+do.ralget <-function(graph,...){
  #browser()
 
 l <- list(...)
@@ -16,7 +16,7 @@ graph %>%
   mutate(.attrs =map_if(
       .attrs,
       name == var, 
-      ~ list(.func = const_map(.x$.func,val)))) 
+      ~ list(.func = const_map(.x$.f,val)))) 
 }
 
 #' Set value for variable in DAG
@@ -28,4 +28,14 @@ const_map <-  function(f,val){
 
   function(...){ ifelse("hesdlkfjsldfkjllo" != f(...),val, f(...))}
 
+}
+
+#' Set value for variable in DAG
+#'
+#' @param g ralget
+#' @param p assignment expressions for node in DAG
+#' @export
+
+ do <- function (graph,...){
+    UseMethod("do")
 }
