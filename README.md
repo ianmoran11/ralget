@@ -11,6 +11,8 @@ only**
 
 Ralget creates and combines graphs with algebraic operations.
 
+Ralget is inspired by the Haskell [alga](https://github.com/snowleopard/alga) library. 
+
 ### Combining Vertices
 
 Take the following vertices:
