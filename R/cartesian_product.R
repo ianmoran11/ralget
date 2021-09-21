@@ -17,14 +17,14 @@ cartesian_product <- function(x,y){
  # browser()
 
   tmp <-
-    crossing(x = as_tibble(x) %>% pull(name),
+    tidyr::crossing(x = as_tibble(x) %>% pull(name),
              y = as_tibble(y) %>% pull(name)) %>%
     mutate(new_name = paste(x,y,sep ="-"))
 
   combo <-
     bind_cols(
-      crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("src" = "new_name")) %>% set_names(c("src","trg","x_src","y_src")),
-      crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("trg" = "new_name"))  %>% select(-src,-trg) %>% set_names(c("x_trg","y_trg"))
+      tidyr::crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("src" = "new_name")) %>% set_names(c("src","trg","x_src","y_src")),
+      tidyr::crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("trg" = "new_name"))  %>% select(-src,-trg) %>% set_names(c("x_trg","y_trg"))
     )
 
   x_edges <- x %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))

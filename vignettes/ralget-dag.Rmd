@@ -23,19 +23,16 @@ library(patchwork)
 library(magrittr)
 library(ralget)
 library(ggforce)
-d <- rlang::as_function
 ```
 
 ### Specify how nodes generate data and evaluate inputs
 ```{r}
-a <- v("a", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
-c <- v("c", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
-x <- v("x", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
-y <- v("y", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
-m <- v("m", .func = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+a <- v("a", .f = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+c <- v("c", .f = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+x <- v("x", .f = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+y <- v("y", .f = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
+m <- v("m", .f = d(~ rnorm(n = 1000, mean = rsum(.x), sd = .5)))
 ```
-
-
 
 ### Declare causal connections
 ```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE, fig.height=3, fig.width=7}

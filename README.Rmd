@@ -16,7 +16,9 @@ knitr::opts_chunk$set(
 ```
 
 
-** Warning: ralget is in early development. Use for experimentation only. **
+**Warning: ralget is in early development. Use for experimentation only**  
+
+**DAG operations of ralget are now in the [`raldag`](https://github.com/ianmoran11/raldag) package.**
 
 # ralget
 Ralget creates and combines graphs with algebraic operations. 
@@ -226,6 +228,7 @@ g <- v("X1") * e("E:X1.X2") * v("X2")
 
 plot(g)
 ```
+
 
 ### Installation
 You can install the development version from [GitHub](https://github.com/) with:

@@ -1,7 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-**Warning: ralget is in early development. Use for experimentation only.**
+**Warning: ralget is in early development. Use for experimentation
+only**
+
+**DAG operations of ralget are now in the
+[`raldag`](https://github.com/ianmoran11/raldag) package.**
 
 # ralget
 
