@@ -1,11 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
 
-**Warning: ralget is in early development. Use for experimentation
-only**
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
 
-**DAG operations of ralget are now in the
-[`raldag`](https://github.com/ianmoran11/raldag) package.**
+***DAG operations of ralget are now in the
+[`raldag`](https://github.com/ianmoran11/raldag) package.***
 
 # ralget
 
