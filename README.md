@@ -6,6 +6,7 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Codecov test
 coverage](https://codecov.io/gh/ianmoran11/ralget/branch/master/graph/badge.svg)](https://codecov.io/gh/ianmoran11/ralget?branch=master)
+[![R-CMD-check](https://github.com/ianmoran11/ralget/workflows/R-CMD-check/badge.svg)](https://github.com/ianmoran11/ralget/actions)
 <!-- badges: end -->
 
 *DAG operations of ralget are now in the
