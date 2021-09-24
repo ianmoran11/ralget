@@ -8,7 +8,7 @@
 #' @S3method  "+" ralget
 
 `+.ralget` <- function(v1,v2){
-  plus(v1,v2)
+  overlay(v1,v2)
 }
 
 #' Add two ralget graphs - original
@@ -17,7 +17,7 @@
 #' @param v2 a ralget graph
 #' @return ralget
 
-plus <-  function(v1,v2){
+overlay <-  function(v1,v2){
   # browser()
 
   if(is.null(v1)){ return(v2)}

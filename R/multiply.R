@@ -8,17 +8,17 @@
 
 `*.ralget` <- function(v1,v2){
 
-  multiply(v1,v2)
+  connect(v1,v2)
 
 }
 
-#' Multiply two ralget graphs - original
+#' Connect two ralget graphs - original
 #'
 #' @param v1 a ralget graph
 #' @param v2 a ralget graph
 #' @return ralget
 
-multiply <- function(v1, v2){
+connect <- function(v1, v2){
   # browser()
 
 
