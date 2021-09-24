@@ -4,6 +4,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/ianmoran11/ralget/branch/master/graph/badge.svg)](https://codecov.io/gh/ianmoran11/ralget?branch=master)
 <!-- badges: end -->
 
 *DAG operations of ralget are now in the

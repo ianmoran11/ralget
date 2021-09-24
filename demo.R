@@ -1,3 +1,14 @@
+library(devtools)
+document()
+install()
+usethis::use_testthat()
+usethis::use_test(name = "commutative-addition")
+usethis::use_test(name = "distributive-multiplication")
+usethis::use_pkgdown()
+
+usethis::use_coverage()
+
+
 #rm(print.ralget)
 plotter <- function(graph){
 
