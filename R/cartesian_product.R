@@ -27,8 +27,12 @@ cartesian_product <- function(x,y){
       tidyr::crossing(src = tmp$new_name, trg = tmp$new_name) %>% full_join(tmp, by = c("trg" = "new_name"))  %>% select(-src,-trg) %>% set_names(c("x_trg","y_trg"))
     )
 
-  x_edges <- x %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))
-  y_edges <- y %>% get_edge_names() %>% as_tibble() %$%  map2(from_name,to_name, ~ list(.x,.y))
+
+  x_edges_1 <- x %>% get_edge_names() %>% as_tibble()  
+  x_edges <- map2(x_edges_1$from_name,x_edges_1$to_name, ~ list(.x,.y))
+
+  y_edges_1 <- y %>% get_edge_names() %>% as_tibble()   
+  y_edges <- map2(y_edges_1$from_name,y_edges_1$to_name, ~ list(.x,.y))
 
   combo_filtered <-
     combo %>%
