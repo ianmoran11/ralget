@@ -25,7 +25,8 @@ Imports:
     ggraph,
     forcats
 Suggests: 
-    testthat (>= 2.1.0),
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown,
     tidyverse
+Config/testthat/edition: 3
