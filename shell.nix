@@ -15,6 +15,7 @@ let
       rmarkdown
       stringi
       covr
+      DT
       microbenchmark
     ];
   };
