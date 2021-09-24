@@ -1,7 +1,7 @@
 #' Create vertex
 #'
 #' @param v1 ralget graph
-#' @param v1 ralget graph
+#' @param v2 ralget graph
 #' @S3method  "==" ralget
 #' @export
 

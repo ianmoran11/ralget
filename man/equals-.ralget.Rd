@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{v1}{ralget graph}
+
+\item{v2}{ralget graph}
 }
 \description{
 Create vertex

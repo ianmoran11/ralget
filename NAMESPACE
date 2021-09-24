@@ -3,7 +3,6 @@
 S3method("*",ralget)
 S3method("+",ralget)
 S3method("==",ralget)
-S3method(plot,ralget)
 export("%x%")
 export(cartesian_product)
 export(e)
