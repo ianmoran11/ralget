@@ -2,7 +2,6 @@ library(devtools)
 document()
 install()
 
-
 # Test ----------------------------------------------------
 circle <- v("a") * v("b") * v("c")
 line <- v("1")*v("2")*v("3")
@@ -10,65 +9,24 @@ line <- v("1")*v("2")*v("3")
 as_tibble(circle %x% line) %>% pull(name)
 as_tibble(activate(circle %x% line,"edges")) 
 
-l <- tribble(
-    ~name,~x,~y,
-   "a", 1,2,
-   "b", 2,2,
-   "c", 1,1,
-   "d", 2,1)
- 
-layout_df <- as_tibble(graph) %>% left_join(l) %>% select(x,y)
-
 a <- v("a")
 b <- v("b")
 c <- v("c")
 d <- v("d")
 
-a + b * (c + d)
+g <-
+  (a * b(9) + m * b(1)) * x +
+  (c * b(2) + m * b(5)) * y +
+  (a * b(3) + c * b(5)) * m
+
+g %>% evaluate_prepare() %>% evaluate_execute()
 
 
+h <- (m * b(2) + x * b(1)) * y
+h %>% evaluate_prepare() %>% evaluate_execute()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-g <- (v("a") + v("b")) * (v("c") + v("d")))
-plotter(g)
-g
-plotter(v("a"))
-plotter(v("a") + v("b"))
-
-
-print.ralget <- function(g){
-   print(plotter(g))
-   class(g) <- class(g)[-1] 
-   print(g)
-    }
-print.ralget <- function(g){g}
-rm(print.ralget)
-plotter(g,l)
+q <- (m * b(2) + x * b(1)) * y  +  ( y * b(2)*c)
+q %>% evaluate_prepare() %>% filter(row_number() == 1) %>% evaluate_execute()
+q %>% evaluate_prepare() %>% filter(row_number() <= 2) %>% evaluate_execute()
+q %>% evaluate_prepare() %>% evaluate_execute()

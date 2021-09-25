@@ -72,6 +72,15 @@ evaluate_execute <- function(g){
                  })
 
           node_result <- do.call(tree_list$.attrs$.f,edge_results)
+<<<<<<< HEAD
+=======
+
+
+          assign(x = tree_list$name,value = node_result,envir = parent.env(environment()))
+                           })
+          )
+}
+>>>>>>> e620e6a4bb24c1f688c5933164caa18be8a8a526
 
 
           assign(x = tree_list$name,value = node_result,envir = parent.env(environment()))
