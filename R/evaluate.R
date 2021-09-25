@@ -30,7 +30,7 @@
 #' }
 
 
-evaluate <- function(g){
+evaluate <- function(g) {
   g %>% evaluate_prepare() %>% evaluate_execute()
 }
 
@@ -40,13 +40,15 @@ evaluate <- function(g){
 #' @param g ralget
 #' @export
 
-evaluate_prepare <- function(g){
+evaluate_prepare <- function(g) {
 
   g %>%
     mutate(order = node_topo_order())  %>%
     arrange(order) %>%
-    mutate(edge_funcs = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(.attrs) )) %>%
-    mutate(edge_args = map(row_number(), ~ .E()[.E() %>% pull(to) == .x,] %>% pull(from_name)))
+    mutate(edge_funcs = map(row_number(),
+     ~ .E()[.E() %>% pull(to) == .x, ] %>% pull(.attrs))) %>%
+    mutate(edge_args = map(row_number(), 
+    ~ .E()[.E() %>% pull(to) == .x, ] %>% pull(from_name)))
 }
 
 #' Evaluate a graph where nodes and edges store functions.2
@@ -58,7 +60,8 @@ evaluate_execute <- function(g){
 
   g %>%
     mutate(eval_statement = pmap(
-      .l = list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args),
+      .l = list(name = name,.attrs = .attrs,edge_funcs = edge_funcs,
+                edge_args = edge_args),
       .f = function(...){
           tree_list <- list(...)
       # browser()
