@@ -1,4 +1,4 @@
-test_that("multiplication works", {
+test_that("multiplication is distributive", {
   library(tidyverse)
   library(tidygraph)
   library(ralget)

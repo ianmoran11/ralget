@@ -56,25 +56,25 @@ evaluate_prepare <- function(g){
 
 evaluate_execute <- function(g){
 
-g %>%
+  g %>%
     mutate(eval_statement = pmap(
-        list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args),
-        .f = function(...){
-            wk <- list(...)
-            assign(
-                x = wk$name,
-                value =
-                    do.call(
-                        wk$.attrs$.f,
-                        map2(wk$edge_funcs,
-                             wk$edge_args,
-                             function(x,y){
-                                do.call(x[[1]], list(sym(y)))
-                             })
-                        ),
-                envir = parent.env(environment()))
-                }
-    )
-    )
-}
+      .l = list(name = name,.attrs = .attrs, edge_funcs= edge_funcs,edge_args= edge_args),
+      .f = function(...){
+          tree_list <- list(...)
+      # browser()
+          edge_results <-
+            map2(tree_list$edge_funcs,
+                 tree_list$edge_args,
+                 function(.x,.y){
+                  # browser()
+                   edge_result <-  do.call(.x[[1]], list(sym(.y)))
+                   return(edge_result)
+                 })
 
+          node_result <- do.call(tree_list$.attrs$.f,edge_results)
+
+
+          assign(x = tree_list$name,value = node_result,envir = parent.env(environment()))
+                           })
+          )
+}

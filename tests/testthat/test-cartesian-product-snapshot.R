@@ -2,6 +2,7 @@ test_that("multiplication works", {
 
   library(tidyverse)
   library(tidygraph)
+  library(magrittr)
   library(ralget)
 
 

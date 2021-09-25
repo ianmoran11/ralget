@@ -3,14 +3,28 @@ document()
 install()
 usethis::use_testthat()
 usethis::use_test(name = "commutative-addition")
+usethis::use_test(name = "evaluation")
 usethis::use_test(name = "distributive-multiplication")
+usethis::use_test(name = "distributive-multiplication-with-edges")
+usethis::use_test(name = "ralget-sum")
 usethis::use_pkgdown()
-
+install.packages("DT")
 usethis::use_coverage()
-
-
+?usethis::use_covr_ignore
+covr::codecov()
 #rm(print.ralget)
 plotter <- function(graph){
+usethis::use_github_actions()
+?covr::report
+covr::report()
+?usethis::use_coverage
+usethis::use_github_action("test-coverage")
+
+circle <- v("a") * v("b") * v("c")
+line <- v("1")*v("2")*v("3")
+
+as_tibble(circle %x% line) %>% pull(name)
+as_tibble(activate(circle %x% line,"edges")) 
 
 #graph <- (v("a")+ v("b"))
 

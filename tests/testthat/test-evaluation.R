@@ -8,7 +8,7 @@ e1 <- e(.func = function(.value){.value})
 
 d <- (a*e1 + b*e1)*c
 
-result <- d %>% evaluate_prepare() %>% evaluate_execute() %>% pull(eval_statement) %>% unlist()
+result <- d %>% evaluate() %>% pull(eval_statement) %>% unlist()
 
 expect_true(all(result == c(1,2,1)))
 })
