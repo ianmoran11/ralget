@@ -4,12 +4,16 @@
 \alias{cartesian_product}
 \title{Cartesian product of two ralgets}
 \usage{
-cartesian_product(x, y)
+cartesian_product(x, y, node_combine = NULL, edge_combine = NULL)
 }
 \arguments{
 \item{x}{ralget graph}
 
 \item{y}{ralget graph}
+
+\item{node_combine}{an anonymous function with two argument indicating how attrs will be cominbed.}
+
+\item{edge_combine}{an anonymous function with two argument indicating how attrs will be cominbed.}
 }
 \description{
 Cartesian product of two ralgets

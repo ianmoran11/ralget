@@ -10,16 +10,18 @@
 #'
 #' @param x ralget graph
 #' @param y ralget graph
+#' @param node_combine an anonymous function with two argument indicating how attrs will be cominbed.
+#' @param edge_combine an anonymous function with two argument indicating how attrs will be cominbed.
 #' @export
 
-cartesian_product <- function(x,y){
+cartesian_product <- function(x,y, node_combine = NULL, edge_combine = NULL){
 
  # browser()
 
   tmp <-
     tidyr::crossing(x = as_tibble(x) %>% pull(name),
              y = as_tibble(y) %>% pull(name)) %>%
-    mutate(new_name = paste(x,y,sep ="-"))
+    mutate(new_name = paste(x,y,sep ="_separator_")) 
 
   combo <-
     bind_cols(
@@ -48,10 +50,13 @@ cartesian_product <- function(x,y){
  nodes_df <-  
   combo_filtered %>% 
   select(src,trg, x_src, y_src) %>% 
-  as_tbl_graph()  %>%  
-  mutate(x_src = map_chr(row_number(),possibly(~ .E()%>% filter(from == .x) %>% pull(x_src)  %>% .[[1]],NA_character_))) %>%
-  mutate(y_src = map_chr(row_number(),possibly(~ .E()%>% filter(from == .x) %>% pull(y_src)  %>% .[[1]],NA_character_))) %>%
-  as_tibble() %>% 
+  as_tbl_graph()  %>% 
+  mutate(x_src = str_extract(name, ("^.+_separator")) %>% str_remove_all("_separator")) %>%
+  mutate(y_src = str_extract(name, ("separator_.+")) %>% str_remove_all("separator_")) %>%
+  mutate(name = name %>% str_remove_all("separator_")) %>%
+  as_tibble() %>%
+  #mutate(x_src = map_chr(row_number(),possibly(~ .E()%>% filter(from == .x) %>% pull(x_src)  %>% .[[1]],NA_character_))) %>% 
+  #mutate(y_src = map_chr(row_number(),possibly(~ .E()%>% filter(from == .x) %>% pull(y_src)  %>% .[[1]],NA_character_))) %>%
   left_join(x, by = c("x_src" = "name"), copy = T,  suffix = c("",".x"))  %>% 
   left_join(y, by = c("y_src" = "name"), copy = T,  suffix = c("",".y")) 
 
@@ -69,8 +74,33 @@ edges_df <-
     copy = T,  suffix = c("",".y")) %>%
     select(-matches("from|to|src|trg|new"))
 
-  return_df <- edges_df %>% activate("nodes") %>% left_join(nodes_df)
+  return_df <- 
+    edges_df %>% 
+    activate("nodes") %>% 
+    mutate(name = name %>% str_remove_all("separator_")) %>%
+    left_join(nodes_df)
 
-  return_df
+
+  if(!is.null(node_combine)){
+   return_df <-
+   return_df %>% 
+    mutate(.attrs = map2(.attrs,.attrs.y, node_combine)) %>%
+    select(-.attrs.y)
+
+  }
+
+
+  if(!is.null(edge_combine)){
+
+   return_df <-
+   return_df %>% 
+    activate("edges") %>% 
+    mutate(.attrs = map2(.attrs,.attrs.y, edge_combine)) %>%
+    select(-.attrs.y) %>%
+    activate("nodes")
+
+  }
+ 
+  return_df %>% get_edge_names() %>% activate("nodes")
 
   }

@@ -9,7 +9,7 @@ test_that("multiplication works", {
   circle <- v("a") * v("b") * v("c")
   line <- v("1")*v("2")*v("3")
 
-  vertices_snap_shot <- c("a-1", "a-2", "a-3", "b-1", "b-2", "b-3", "c-1", "c-2", "c-3")
+  vertices_snap_shot <- c("a_1", "a_2", "a_3", "b_1", "b_2", "b_3", "c_1", "c_2", "c_3")
 
   edges_snapshot <-
    tribble( 
@@ -35,7 +35,7 @@ test_that("multiplication works", {
 
 
   expect_true(
-    all(as_tibble(activate(circle %x% line,"edges"))  == edges_snapshot) &
+    all(as_tibble(activate(circle %x% line,"edges")) %>% select(from,to) %>%  `==`(edges_snapshot)) &
     all(pull(as_tibble(circle %x% line),name) == vertices_snap_shot)
     )
 
