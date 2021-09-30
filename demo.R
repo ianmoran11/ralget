@@ -3,12 +3,16 @@ library(devtools)
 
 document()
 install()
+test()
+check()
 
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
+library(dagitty)
 library(patchwork)
 library(igraph)
+library(ggdag)
 library(magrittr)
 library(ralget)
 library(raldag)
@@ -69,9 +73,14 @@ g <-
  (c * b(2) + m * b(5)) * y +
  (a * b(3) + c * b(5)) * m
 
-xt <- g %x% t
+xt <- cartesian_product(g,t,node_combine =  ~ c(.x,.y), edge_combine =  ~ c(.x,.y)) 
 
-cartesian_product(g,t,node_combine =  ~ c(.x,.y), edge_combine =  ~ c(.x,.y)) %>% simulate()
+xt %>% activate("edges") %>% mutate(daggity_text= paste0(from_name, " -> ",to_name)) %>% 
+pull(daggity_text) %>% paste(collapse = "\n") %>% paste("dag {",.,"}") %>% dagitty::dagitty() %>%
+tidy_dagitty() %>%
+ggdag(.) +
+  theme_dag()
+
 
 xtc <- 
 xt %>% 
@@ -86,7 +95,6 @@ xt %>%
 
 xtc %>% evaluate_prepare() %>% pull(.attrs)
 xtc %>% simulate()
-
 
 
 

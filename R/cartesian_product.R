@@ -100,6 +100,8 @@ edges_df <-
     activate("nodes")
 
   }
+
+  class(return_df) <- c("ralget", class(return_df))
  
   return_df %>% get_edge_names() %>% activate("nodes")
 

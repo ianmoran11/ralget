@@ -16,6 +16,7 @@ let
       stringi
       covr
       DT
+      ggdag
       microbenchmark
     ];
   };
