@@ -7,7 +7,7 @@ test()
 check()
 usethis::use_pkgdown()
 library(usethis)
-
+pkgdown::build_site()
 usethis::use_pkgdown_github_pages()
 
 library(tidyverse)
