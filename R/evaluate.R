@@ -29,7 +29,6 @@
 #'  evaluate(SIR)
 #' }
 
-
 evaluate <- function(g) {
   g %>% evaluate_prepare() %>% evaluate_execute()
 }
@@ -47,7 +46,7 @@ evaluate_prepare <- function(g) {
     arrange(order) %>%
     mutate(edge_funcs = map(row_number(),
      ~ .E()[.E() %>% pull(to) == .x, ] %>% pull(.attrs))) %>%
-    mutate(edge_args = map(row_number(), 
+    mutate(edge_args = map(row_number(),
     ~ .E()[.E() %>% pull(to) == .x, ] %>% pull(from_name)))
 }
 
@@ -64,19 +63,27 @@ evaluate_execute <- function(g){
                 edge_args = edge_args),
       .f = function(...){
           tree_list <- list(...)
-      # browser()
+       # browser()
           edge_results <-
             map2(tree_list$edge_funcs,
                  tree_list$edge_args,
                  function(.x,.y){
-                  # browser()
+                    # browser()
                    edge_result <-  do.call(.x[[1]], list(sym(.y)))
                    return(edge_result)
                  })
+          # browser()
 
-          node_result <- do.call(tree_list$.attrs$.f,edge_results)
+          node_result <- do.call(tree_list$.attrs$.f,list(edge_results))
 
-          assign(x = tree_list$name,value = node_result,envir = parent.env(environment()))
+
+        print(paste0(tree_list$name, "~ ", paste0(tree_list$edge_args, collapse = "+")))
+        print(paste0(node_result, "~ ", paste0(edge_results, collapse = "+")))
+
+        # browser()
+          assign(x = tree_list$name,value = node_result,envir = .GlobalEnv)
                            })
           )
 }
+
+
