@@ -205,7 +205,6 @@ v("X1") * e("E:X1.X2") * v("X2")
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include = TRUE, fig.height=6, fig.width=14.5}
 g <- v("X1") * e("E:X1.X2") * v("X2")
-
 ```
 
 
