@@ -13,15 +13,20 @@ let
       devtools
       patchwork
       rmarkdown
+      visNetwork
       stringi
       covr
       DT
+      languageserver
+      dagitty
+      ggforce
+      conflicted
       ggdag
       microbenchmark
     ];
   };
 in mkShell {
-  buildInputs = with pkgs; [pandoc vscodium git glibcLocales openssl which openssh curl wget ];
+  buildInputs = with pkgs; [ emacs pandoc vscodium git glibcLocales openssl which openssh curl wget ];
   inputsFrom = [ my-r-pkgs ];
   shellHook = ''
     mkdir -p "$(pwd)/_libs"

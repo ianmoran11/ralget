@@ -30,6 +30,7 @@
 #' }
 
 evaluate <- function(g) {
+ # browser()
   g %>% evaluate_prepare() %>% evaluate_execute()
 }
 
@@ -56,34 +57,45 @@ evaluate_prepare <- function(g) {
 #' @export
 
 evaluate_execute <- function(g){
+# browser()
 
-  g %>%
-    mutate(eval_statement = pmap(
-      .l = list(name = name,.attrs = .attrs,edge_funcs = edge_funcs,
-                edge_args = edge_args),
-      .f = function(...){
-          tree_list <- list(...)
-       # browser()
-          edge_results <-
-            map2(tree_list$edge_funcs,
-                 tree_list$edge_args,
-                 function(.x,.y){
-                    # browser()
-                   edge_result <-  do.call(.x[[1]], list(sym(.y)))
-                   return(edge_result)
-                 })
-          # browser()
+g_list <- 
+  g %>% as_tibble() %>% ungroup() %>% map(~ .x) 
 
-          node_result <- do.call(tree_list$.attrs$.f,list(edge_results))
+eval_statement <-
+  g_list %>% 
+  pmap(
+    .f = function(...){
+        tree_list <- list(...)
+# browser()
+        edge_results <-
+          map2(tree_list$edge_funcs,
+              tree_list$edge_args,
+              function(.x,.y){
+              #    browser()
+                edge_result <-  do.call(.x[[1]], list(sym(.y)))
+                return(edge_result)
+              })
+ #browser()
+          if(is.null(unlist(edge_results))){
+        node_result <- do.call(tree_list$.attrs$.f,edge_results)
+            }else{
+        node_result <- do.call(tree_list$.attrs$.f,list(edge_results))
+          }
+
+        node_result <- do.call(tree_list$.attrs$.f,list(edge_results))
+ #      print(paste0(tree_list$name, "~ ", paste0(tree_list$edge_args, collapse = "+")))
+ #      print(paste0(node_result, "~ ", paste0(edge_results, collapse = "+")))
+      # browser()
+        assign(x = tree_list$name,value = node_result,envir = parent.env(environment()))
+                        })
 
 
-        print(paste0(tree_list$name, "~ ", paste0(tree_list$edge_args, collapse = "+")))
-        print(paste0(node_result, "~ ", paste0(edge_results, collapse = "+")))
 
-        # browser()
-          assign(x = tree_list$name,value = node_result,envir = .GlobalEnv)
-                           })
-          )
+
+ g %>%
+    mutate(eval_statement  = eval_statement)
+
 }
 
 
