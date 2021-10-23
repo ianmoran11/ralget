@@ -7,7 +7,7 @@ test()
 check()
 usethis::use_pkgdown()
 library(usethis)
-
+load_all()
 usethis::use_pkgdown_github_pages()
 
 library(tidyverse)
@@ -19,11 +19,47 @@ library(igraph)
 library(ggdag)
 library(magrittr)
 library(ralget)
-library(raldag)
-
+load_all()
 # Test ----------------------------------------------------
-circle <- v("a") * v("b") * v("c")
+circle <- v("a") * (v("b") * e("test attrs") * v("c"))
 line <- v("1")*v("2")*v("3")
+
+class(e(1)+ e(2))
+
+e_r1 <- v("two") * ((e("one")+ e("two")))
+e_r <-  (v("two") ) * ((e("one")+ e("two")))
+e_l <-  ((e("one")+ e("two"))) * v("one")
+
+ds <- 
+((e("eone"))*v("vone")) + 
+((e("ethree") + e("efour") + e("efour"))*v("vtwo")) 
+
+dsd <- v("vhun")*ds
+plot(dsd)
+
+
+(e_r1 * circle) %>% activate("edges") %>% as_tibble() %>% print(n = Inf)
+
+plot(e_r1 * circle)
+
+
+e_r11 <- e_r1 * v("one")
+
+
+
+
+e_r1 * v("two")
+t <- e_r * v("two")
+
+t %>% activate("edges") %>% as_tibble() %>% unnest(.attrs)
+
+v(2) * ((e(1)+ e(2)) * v(1))
+
+vs <- v("v1")*(e("e1") + e("e2") + e("e3"))*v("v2")
+plot(vs)
+
+
+v(1) * (e(1) + e(2)) 
 
 as_tibble(circle %x% line) %>% pull(name)
 as_tibble(activate(circle %x% line,"edges"))

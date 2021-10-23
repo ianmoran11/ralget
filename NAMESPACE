@@ -2,6 +2,7 @@
 
 S3method("*",ralget)
 S3method("+",ralget)
+S3method("+",ralget_edge)
 S3method("==",ralget)
 export("%x%")
 export(cartesian_product)
