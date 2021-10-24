@@ -111,21 +111,9 @@ if(".waiting_edge_right" %in% names(as_tibble(v1)) ){
       bound <-
       bound %>%
       activate("edges") %>%
-#      get_edge_names() %>%
-#      mutate(.attrs_left_t = map(
-#        to,
-#        ~ .N() %>%
-#          filter(row_number() == .x) %>%
-#          filter(name %in% v2_names) %>%
-#          pull(.waiting_edge_left) %>% unlist()
-#      )
-#      ) %>%
-#      mutate(.attrs_left = map2(new,.attrs_left_t,
-#                                function(new,.attrs_left_t){ifelse(new,list(.attrs_left_t),list(NULL)) %>% unlist})) %>%
       mutate(.attrs = pmap(list(new,.attrs,.waiting_edge_right), 
               function(new,.attrs,.waiting_edge_right){ifelse(new, .waiting_edge_right, 
               ifelse(is.null(.attrs),list(NULL), .attrs)) %>% unlist})) %>%
-#     select(-.attrs_left_t) %>%
       activate("nodes") %>% select(-.waiting_edge_right)  %>%
       activate("edges") %>%
       select(-.waiting_edge_right, -new)
@@ -136,25 +124,12 @@ if(".waiting_edge_right" %in% names(as_tibble(v1)) ){
       bound <-
       bound %>%
       activate("edges") %>%
-#      get_edge_names() %>%
-#      mutate(.attrs_left_t = map(
-#        to,
-#        ~ .N() %>%
-#          filter(row_number() == .x) %>%
-#          filter(name %in% v2_names) %>%
-#          pull(.waiting_edge_left) %>% unlist()
-#      )
-#      ) %>%
-#      mutate(.attrs_left = map2(new,.attrs_left_t,
-#                                function(new,.attrs_left_t){ifelse(new,list(.attrs_left_t),list(NULL)) %>% unlist})) %>%
-
       mutate(.attrs = pmap(list(new,.attrs,.waiting_edge_left), 
               function(new,.attrs,.waiting_edge_right){ifelse(new, .waiting_edge_left, 
               ifelse(is.null(.attrs),list(NULL), .attrs)) %>% unlist})) %>%
       activate("nodes") %>% select(-.waiting_edge_left)  %>%
       activate("edges") %>%
       select(-.waiting_edge_left, -new)
-
   }
 
   bound %>% select(-matches("^new$")) %>% activate("nodes")
