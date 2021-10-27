@@ -26,7 +26,7 @@ let
     ];
   };
 in mkShell {
-  buildInputs = with pkgs; [ vscode emacs pandoc vscodium git glibcLocales openssl which openssh curl wget ];
+  buildInputs = with pkgs; [ R vscode emacs pandoc vscodium git glibcLocales openssl which openssh curl wget ];
   inputsFrom = [ my-r-pkgs ];
   shellHook = ''
     mkdir -p "$(pwd)/_libs"
