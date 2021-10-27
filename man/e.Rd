@@ -4,7 +4,7 @@
 \alias{e}
 \title{Create ralget edge}
 \usage{
-e(...)
+e(.name = "none", .type = "none", .unique = T, ...)
 }
 \arguments{
 \item{...}{objects stored as vertex attributes.}
