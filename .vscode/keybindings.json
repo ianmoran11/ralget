@@ -1,18 +1,39 @@
+// Place your key bindings in this file to override the defaultsauto[]
 [
+    // assignment
     {
         "key": "alt+-",
         "command": "type",
         "when": "editorLangId == r || editorLangId == rmd && editorTextFocus",
-        "args": { "text": " <- " }
+        "args": {
+            "text": " <- "
+        }
     },
+    // Pipe
     {
         "key": "ctrl+shift+m",
         "command": "type",
         "when": "editorLangId == r || editorLangId == rmd && editorTextFocus",
-        "args": { "text": " %>% " }
+        "args": {
+            "text": " |> "
+        }
     },
+    // Insert a chunk
     {
-        "key": "ctrl+shift+m",
-        "command": "-workbench.actions.view.problems"
+        "key": "ctrl+alt+i",
+        "command": "type",
+        "when": "editorLangId == r || editorLangId == rmd && editorTextFocus",
+        "args": {
+            "text": "```{r}\n\n```"
+        }
+    },
+    // Roxygen skeleton
+    {
+        "key": "ctrl+alt+shift+r",
+        "command": "type",
+        "when": "editorLangId == r || editorLangId == rmd && editorTextFocus",
+        "args": {
+            "text": "#' Title\n#'\n#'Description\n#'\n#'@param $$\n#'\n#'@export\n#'\n#'@example\n#'"
+        }
     }
 ]

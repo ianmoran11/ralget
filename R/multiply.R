@@ -16,8 +16,10 @@
 #' @return ralget
 
 separate_edges <- function(current_graph, side){
+ #  current_graph <- v1
+ #  side <- ".waiting_edge_right"
   current_graph_edges_n <- pull(current_graph,!!sym(side))[[1]] %>% length()
-  purrr::map(1:current_graph_edges_n,extract_edgelist_n, graph = current_graph, side = side) %>% bind_graphs()
+  purrr::map(1:current_graph_edges_n,extract_edgelist_n, current_graph = current_graph, side = side) %>% bind_graphs()
 }
 
 #' Multiply two ralget graphs
@@ -26,8 +28,11 @@ separate_edges <- function(current_graph, side){
 #' @param n a ralget graph
 #' @param side a ralget graph
 #' @return ralget
-extract_edgelist_n <- function(graph, n, side){
- graph %>% mutate(!!sym(side) := map(!!sym(side),n))
+extract_edgelist_n <- function(current_graph, n, side){
+ # current_graph <- v1
+ # side <- ".waiting_edge_right"
+ # n <- 1
+ current_graph %>% mutate(!!sym(side) := map(!!sym(side),n))
 }
 
 #' Connect two ralget graphs - original
@@ -39,7 +44,7 @@ extract_edgelist_n <- function(graph, n, side){
 connect <- function(v1, v2){
 ## Outline: ----
 ### IF (EDGE * _)|(_ * EDGE) -> (GRAPH,WAITING EDGE)
-# browser()
+#browser()
   if(("ralget_edge" %in% class(v1)) & (!"ralget_edge" %in% class(v2))){
     attributes(v2) <- c(attributes(v2), list(waiting_edge_left = v1))
     v2 <- v2 %>% mutate(.waiting_edge_left = purrr::map(1, ~ v1))
@@ -72,12 +77,46 @@ if( ".waiting_edge_left" %in% names(as_tibble(v2))){
   new_edges <- tidyr::crossing(from = v1_names, to = v2_names)
 
 if(exists("v1_waiting")){
-  new_edges  <- left_join(new_edges, as_tibble(v1_waiting), by = c("from"= "name"))
+  new_edges  <- 
+    left_join(new_edges, as_tibble(v1_waiting), by = c("from"= "name")) %>%
+    mutate(type_right = map_chr(.waiting_edge_right, ~ .x$.type)) %>%
+    mutate(unique_right = map_chr(.waiting_edge_right, ~ .x$.unique)) 
 }
 
 if(exists("v2_waiting")){
-  new_edges  <-  left_join(new_edges, as_tibble(v2_waiting), by = c("to"= "name"))
+  new_edges  <- 
+   left_join(new_edges, as_tibble(v2_waiting), by = c("to"= "name")) %>%
+    mutate(type_left = map_chr(.waiting_edge_left, ~ .x$.type)) %>%
+    mutate(unique_left = map_chr(.waiting_edge_left, ~ .x$.unique)) 
 }
+
+#Wbrowser()
+if(("type_left"  %in% names(as_tibble(new_edges))) & 
+   ("type_right" %in% names(as_tibble(new_edges)))){
+
+    unmatched_edges  <-
+    new_edges %>% 
+       filter(type_left != type_right)
+
+    new_edges <-
+      new_edges %>% 
+        filter(type_left == type_right)
+
+# used edges 
+used_edges_right <- unlist(map(pull(new_edges, .waiting_edge_right), ".name"))
+used_edges_left <-  unlist(map(pull(new_edges, .waiting_edge_left), ".name"))
+
+v1_keep <- pull(v1, .waiting_edge_right) %>% map(.,~ !(map(.x,".name") %in% used_edges_right))
+v2_keep <-  pull(v2, .waiting_edge_left) %>% map(.,~ !(map(.x,".name") %in% used_edges_left))
+
+v1_waiting_edges <- v1 %>% mutate(.waiting_edge_right = map2(.waiting_edge_right,v1_keep, function(edge,keep){edge[keep]})) %>% as_tibble()
+v2_waiting_edges <- v2 %>% mutate(.waiting_edge_left = map2(.waiting_edge_left,v2_keep, function(edge,keep){edge[keep]})) %>% as_tibble()
+
+waiting_edges_df <- bind_rows(v1_waiting_edges,v2_waiting_edges)
+
+}
+
+
 
 ## Join V1 to V2 ---
 suppressMessages(
@@ -105,33 +144,49 @@ if(nrow(edges_to_add)>0){
     mutate(new = ifelse(is.na(new),T,new))
 }
 
+
+
+#browser()
 ## If waiting edge right on v1
 if(".waiting_edge_right" %in% names(as_tibble(v1)) ){
+
+.attrs_var <- ifelse(".attrs" %in% names(as_tibble(bound)), ".attrs",".attrs.x") %>% sym()
+
     bound <-
       bound <-
       bound %>%
       activate("edges") %>%
-      mutate(.attrs = pmap(list(new,.attrs,.waiting_edge_right), 
+      mutate(.attrs = pmap(list(new,!!.attrs_var,.waiting_edge_right), 
               function(new,.attrs,.waiting_edge_right){ifelse(new, .waiting_edge_right, 
               ifelse(is.null(.attrs),list(NULL), .attrs)) %>% unlist})) %>%
       activate("nodes") %>% select(-.waiting_edge_right)  %>%
       activate("edges") %>%
-      select(-.waiting_edge_right, -new)
+      select(-.waiting_edge_right)
 }
 
   if(".waiting_edge_left" %in% names(as_tibble(v2)) ){
+
+.attrs_var <- ifelse(".attrs" %in% names(as_tibble(bound)), ".attrs",".attrs.y") %>% sym()
+
     bound <-
       bound <-
       bound %>%
       activate("edges") %>%
-      mutate(.attrs = pmap(list(new,.attrs,.waiting_edge_left), 
+      mutate(.attrs = pmap(list(new,!!.attrs_var,.waiting_edge_left), 
               function(new,.attrs,.waiting_edge_right){ifelse(new, .waiting_edge_left, 
               ifelse(is.null(.attrs),list(NULL), .attrs)) %>% unlist})) %>%
       activate("nodes") %>% select(-.waiting_edge_left)  %>%
       activate("edges") %>%
-      select(-.waiting_edge_left, -new)
+      select(-.waiting_edge_left)
   }
 
-  bound %>% select(-matches("^new$")) %>% activate("nodes")
-
+  bound %>% 
+    activate("edges") %>% 
+    select(-matches("^\\.attrs\\.y$"),-matches("^\\.attrs\\.x$")) %>% 
+    select(-matches("^unique_left$"),-matches("^unique_right$")) %>% 
+    select(-matches("^type_left$"),-matches("^type_right$")) %>% 
+    select(-matches("^new$"), ) %>% 
+    activate("nodes") %>%
+    left_join(waiting_edges_df) 
 }
+

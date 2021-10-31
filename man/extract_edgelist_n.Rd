@@ -4,14 +4,14 @@
 \alias{extract_edgelist_n}
 \title{Multiply two ralget graphs}
 \usage{
-extract_edgelist_n(graph, n, side)
+extract_edgelist_n(current_graph, n, side)
 }
 \arguments{
-\item{graph}{a ralget graph}
-
 \item{n}{a ralget graph}
 
 \item{side}{a ralget graph}
+
+\item{graph}{a ralget graph}
 }
 \value{
 ralget

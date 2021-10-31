@@ -9,7 +9,8 @@ usethis::use_pkgdown()
 library(usethis)
 load_all()
 usethis::use_pkgdown_github_pages()
-
+options(width = 180)
+library(devtools)
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
@@ -20,9 +21,18 @@ library(ggdag)
 library(magrittr)
 library(ralget)
 load_all()
+
 # Test ----------------------------------------------------
 circle <- v("a") * (v("b") * e("test attrs") * v("c"))
 line <- v("1")*v("2")*v("3")
+
+v1_r <- v("v1") * (e("e1", "type1",  F) + e("e2", "type2",  F))
+v2_l <-  (e("e1", "type1",  F) + e("e3", "type3", F) + e("e4", "type4", F)) * v("v2")
+
+v1_r * v2_l
+
+v2_l %>% pull(.waiting_edge_left)
+v1_r %>% pull(.waiting_edge_right)
 
 class(e(1)+ e(2))
 
