@@ -1,6 +1,6 @@
 rm(list = ls())
 library(devtools)
-
+  
 document()
 install()
 test()
