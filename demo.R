@@ -9,7 +9,7 @@ usethis::use_pkgdown()
 library(usethis)
 load_all()
 usethis::use_pkgdown_github_pages()
-
+install.packages("datapasta")
 library(tidyverse)
 library(tidygraph)
 library(ggraph)

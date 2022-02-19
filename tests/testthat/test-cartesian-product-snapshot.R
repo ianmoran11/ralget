@@ -5,7 +5,6 @@ test_that("multiplication works", {
   library(magrittr)
   library(ralget)
 
-
   circle <- v("a") * v("b") * v("c")
   line <- v("1")*v("2")*v("3")
 

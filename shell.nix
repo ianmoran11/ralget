@@ -23,6 +23,7 @@ let
       conflicted
       ggdag
       microbenchmark
+      DiagrammeR
     ];
   };
 in mkShell {

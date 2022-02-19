@@ -1,0 +1,91 @@
+---
+title: "diagrams"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{diagrams}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ralget)
+library(tidyverse)
+library(tidygraph)
+```
+
+
+```{r}
+graph <- 
+(e("0.1") * v("v1"))  + 
+(v("v1") * e("e1.2") * v("v2")) +
+(v("v1") * e("e1.3") * v("v3")) +
+(v("v3") * e("3.4"))  
+  
+graph %>% diagram()
+graph %>% pack("v1-v3") %>% diagram()
+graph %>% pack("v1-v3") %>% unpack %>% diagram()
+
+library(ralget)
+library(tidyverse)
+library(tidygraph)
+
+
+
+
+
+# Vertices 
+make_lemon_filling <- v(name = "Make lemon filling")
+separate_egg       <- v(name = "Separate egg")
+make_meringue      <- v(name = "Make meringue")
+fill_crust         <- v(name = "Fill crust")
+add_meringue       <- v(name = "Add meringue")
+
+# Edges 
+prepared_crust    <- e(name = "Prepared crust")
+lemon             <- e(name = "Lemon")
+butter            <- e(name = "Butter")
+sugar             <- e(name = "Sugar")
+egg               <- e(name = "Egg")
+yolk              <- e(name = "Yolk")
+white             <- e(name = "White")
+lemon_filling     <- e(name = "Lemon filling")
+meringue          <- e(name = "Meringue")
+unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
+unbaked_pie       <- e(name = "Unbaked pie")
+
+# Graph
+graph <-
+  (egg * separate_egg) +
+  (separate_egg * yolk * make_lemon_filling) +
+  (sugar * make_lemon_filling) +
+  (butter * make_lemon_filling) +
+  (sugar * make_lemon_filling) +
+  (lemon * make_lemon_filling) +
+  (separate_egg * white * make_meringue) +
+  (make_lemon_filling * lemon_filling * fill_crust) +
+  (prepared_crust * fill_crust) +
+  (fill_crust * unbaked_lemon_pie * add_meringue) +
+  (make_meringue * meringue * add_meringue) +
+  (add_meringue * unbaked_pie) 
+
+# Diagram 
+graph %>% diagram()
+
+
+
+
+
+
+
+
+
+```    
