@@ -78,7 +78,8 @@ overlay <-  function(v1,v2){
 
 ## ([V] + [V]) -> [V]
 suppressMessages(
-  g <- tidygraph::graph_join(v1, v2)
+  
+  g <- ralget_graph_join(v1, v2)
 )
 
   g

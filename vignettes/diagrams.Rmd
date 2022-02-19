@@ -34,11 +34,75 @@ graph %>% diagram()
 graph %>% pack("v1-v3") %>% diagram()
 graph %>% pack("v1-v3") %>% unpack %>% diagram()
 
+rm(list = ls())
+
 library(ralget)
 library(tidyverse)
 library(tidygraph)
+devtools::load_all()
+
+(e("0.1") * v("v1")) %>% diagram()
+(v("v01") * e("0.1")) %>% diagram()
 
 
+((e("0.1") * v("v1")) + (v("v01") * e("0.1")))  %>% diagram()
+
+g1 <- 
+((e("0.1") * v("v1"))   +
+(e("2.3") * v("v3"))) 
+
+
+g2 <- 
+((v("v5") * e("5.6")) + 
+(v("v2") * e("2.3")))
+
+g1 %>% diagram()
+g2 %>% diagram()
+
+(g2 + g1) %>% diagram()
+
+
+shared_edges <- 
+pull(g1, .waiting_edge_left)[pull(g1, .waiting_edge_left) %in% pull(g2,.waiting_edge_right)]  
+
+new_joins <-  
+map(shared_edges,function(shared_edges){
+shared_on_right <- 
+g1 %>%
+  mutate(matched = map_lgl(.waiting_edge_left, ~ .x == shared_edges)) %>% 
+  filter(matched == TRUE)  %>% 
+  select(-.waiting_edge_left, -matched)
+
+shared_on_left <- 
+g2 %>%
+  mutate(matched = map_lgl(.waiting_edge_right, ~ .x == shared_edges)) %>% 
+  filter(matched == TRUE)  %>% 
+  select(-.waiting_edge_right, -matched)
+
+(shared_on_left  * shared_edges * shared_on_right)
+}) %>% reduce(`+`) 
+
+g1_new <- 
+g1 %>% mutate(.waiting_edge_left = 
+map_if(pull(g1, .waiting_edge_left),
+      pull(g1, .waiting_edge_left) %in% pull(g2,.waiting_edge_right),
+      ~ NULL))
+g2_new <- 
+g2 %>% mutate(.waiting_edge_right = 
+map_if(pull(g2, .waiting_edge_right),
+      pull(g2, .waiting_edge_right) %in% pull(g1,.waiting_edge_left),
+      ~ NULL))
+
+(g1_new + g2_new + new_joins) %>% diagram()
+
+
+
+
+filter(g1,pull(g1, .waiting_edge_left) %in% pull(g2,.waiting_edge_right))
+
+
+
+graph %>% pull(wait)
 
 
 

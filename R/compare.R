@@ -28,3 +28,13 @@ compare <- function(v1,v2){
   nodes & edges
 
 }
+
+`==.ralget_edge` <- function(e1,e2){
+  
+ compare_edges(e1,e2)
+  
+}
+
+compare_edges <- function(e1,e2){
+all(unlist(e1) == unlist(e2))
+}

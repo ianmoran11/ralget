@@ -49,14 +49,14 @@ if(graph %>% activate("edges") %>% as_tibble() %>% nrow() %>% `>`(0)){
 dot_in <- tibble(from = NA_character_, edge_name = NA_character_, to = NA_character_) %>% filter(F)
 dot_out <- tibble(from = NA_character_, edge_name = NA_character_, to = NA_character_) %>% filter(F)
 if(graph %>% activate("nodes") %>% as_tibble()  %>% names() %>% `%in%`(".waiting_edge_left",.)){
-  dot_in <- graph %>% as_tibble() %>% mutate(left = map(.waiting_edge_left, ~ .x %>% unlist %>% as.character)) %>% unnest(left) %>% mutate(from = left) %>% rename(edge_name =left, to = name) %>% select(from,edge_name, to)
+  dot_in <- graph %>% as_tibble() %>% mutate(left = map(.waiting_edge_left, ~ .x %>% unlist %>% as.character)) %>% unnest(left) %>% mutate(from = paste(name,left)) %>% rename(edge_name =left, to = name) %>% select(from,edge_name, to)
 }
 if(graph %>% activate("nodes") %>% as_tibble()  %>% names() %>% `%in%`(".waiting_edge_right",.)){
-  dot_out <- graph %>% as_tibble() %>% mutate(right = map(.waiting_edge_right,~ .x %>% unlist %>% as.character)) %>% unnest(right) %>%  mutate(from =name) %>% rename(edge_name =right) %>% mutate(to = edge_name) %>% select(from,edge_name, to)
+  dot_out <- graph %>% as_tibble() %>% mutate(right = map(.waiting_edge_right,~ .x %>% unlist %>% as.character)) %>% unnest(right) %>%  mutate(from =name) %>% rename(edge_name =right) %>% mutate(to = paste(from,edge_name)) %>% select(from,edge_name, to)
 }
 
 box_names <- graph %>% activate("nodes") %>% pull(name) %>% map_chr(~paste0("'",.x,"'")) %>% paste(collapse = "; ")
-point_names <- unique(c(pull(dot_in,edge_name),pull(dot_out,edge_name))) %>% map_chr(~paste0("'",.x,"'")) %>% paste(collapse = "; ")
+point_names <- unique(c(pull(dot_in,from),pull(dot_out,to))) %>% map_chr(~paste0("'",.x,"'")) %>% paste(collapse = "; ")
 
 edge_txt <- list(internode_joins , dot_in, dot_out) %>% keep(is.data.frame) %>% bind_rows() %>% mutate_all(.funs = ~ paste0("'",.,"'"))  %>% 
   mutate(edge_txt = paste0(from, " -> ", to," [label = ",edge_name ,"]")) %>% pull(edge_txt) %>% paste0(collapse = "\n")
