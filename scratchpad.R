@@ -42,8 +42,29 @@ components %>% diagram()
 (components + assembly) %>% diagram()
 
 
+(assembly + components + egg_step) %>% diagram()
 
+(components + assembly) %>% diagram()
+
+(assembly + components) %>% diagram()
 diagram(graph)
+
+
+g2 <- 
+tidygraph::graph_join((e(name= "g1_to_g2") * v("g21") * e(name ="g2_to_g1")),(e(name= "gX_to_g2") * v("g22") * e(name= "g2_to_gX")))
+g2 %>% diagram() 
+ 
+g1 <- 
+tidygraph::graph_join((e(name= "g2_to_g1") * v("g11") * e(name= "g1_to_g2")),(e(name= "gX_to_g1") * v("g12") * e(name= "g1_to_gX")))
+g1 %>% diagram()
+  
+(g2 + g1) %>% diagram
+
+(g1 + g2) %>% diagram
+
+
+
+
 
 
 
