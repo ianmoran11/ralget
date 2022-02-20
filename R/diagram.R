@@ -64,7 +64,7 @@ edge_txt <- list(internode_joins , dot_in, dot_out) %>% keep(is.data.frame) %>% 
 diagram_txt <- 
 paste0("\ndigraph rmarkdown{\nrankdir = TB\nnode [ shape = box , fontname = Arial]\n",box_names,"\n\nnode [ shape = point , fontname = Arial]\n",point_names,"\n\n",edge_txt,"}")
 
-# diagram_txt %>% cat()
+diagram_txt %>% cat()
 
 diagram_txt %>% DiagrammeR::grViz()
   
