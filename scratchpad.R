@@ -1,7 +1,8 @@
 library(ralget)
 library(tidyverse)
 library(tidygraph)
-
+library(devtools)
+load_all()
 
 make_lemon_filling  <- v(name = "Make lemon filling")
 separate_egg  <- v(name = "Separate egg")
@@ -21,8 +22,7 @@ meringue <- e(name = "Meringue")
 unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
 unbaked_pie <- e(name = "Unbaked pie")
 
-egg_step <-
-  (egg * separate_egg * (yolk +  white))
+egg_step <-  (egg * separate_egg * (yolk +  white))
 
 components <-
      ((sugar + butter + yolk + lemon)  *  make_lemon_filling * lemon_filling) +
@@ -31,15 +31,26 @@ components <-
   a1 <- ((meringue + unbaked_lemon_pie)* add_meringue * unbaked_pie) 
   a2 <- ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)  
 
+ a1 %>% diagram() 
+ a2 %>% diagram()  
+(a1 + a2) %>% activate("edges") %>% select(-.waiting_edge_left) %>% activate("nodes") %>% diagram()
+  
 assembly <-   a1 + a2
   
 assembly %>% diagram()
 egg_step %>% diagram()
 components %>% diagram()
 
+
+pull(assembly,.waiting_edge_left) %>% str()
+pull(assembly,.waiting_edge_right) %>% str()
+
+
+(components + assembly) %>% diagram()
+
+
 (egg_step + components)  %>% diagram()
 (assembly + components) %>% diagram()
-(components + assembly) %>% diagram()
 
 
 (assembly + components + egg_step) %>% diagram()
