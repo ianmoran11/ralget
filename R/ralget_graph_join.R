@@ -1,135 +1,157 @@
 
-ralget_graph_join <- function(g2, g1){
+ralget_graph_join <- function(vl, vr){
  # browser()
-  # 
-  shared_edges_g2g1 <- list() 
-  shared_edges_g1g2 <- list() 
+  
+  shared_edges_vlvr <- list() 
+  shared_edges_vrvl <- list() 
  
 # Check whether there are any waiting edges ---------------------------------
   
- if(((".waiting_edge_left" %in% names(as_tibble(activate(g1 ,"nodes")))) & 
-      (".waiting_edge_right" %in% names(as_tibble(activate(g2 ,"nodes"))))) |
-   (((".waiting_edge_right" %in% names(as_tibble(activate(g2 ,"nodes")))) & 
-    (".waiting_edge_left" %in% names(as_tibble(activate(g1 ,"nodes"))))))){  
+ if(((".waiting_edge_left" %in% names(as_tibble(activate(vr ,"nodes")))) & 
+      (".waiting_edge_right" %in% names(as_tibble(activate(vl ,"nodes"))))) |
+   (((".waiting_edge_right" %in% names(as_tibble(activate(vl ,"nodes")))) & 
+    (".waiting_edge_left" %in% names(as_tibble(activate(vr ,"nodes"))))))){  
   
   
-# Get share edges for  g2->g1 ---------------------------------
-if(((".waiting_edge_left" %in% names(as_tibble(activate(g1 ,"nodes")))) & 
-  (".waiting_edge_right" %in% names(as_tibble(activate(g2 ,"nodes")))))){
-  g1_edges_l <- pull(g1 ,.waiting_edge_left) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + .x)  %>%  flatten  %>% keep(~ .x[["name"]] != ".tmp")
-  g2_edges_r <- pull(g2 ,.waiting_edge_right) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + .x) %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
-  shared_edges_g2g1 <- append(g1_edges_l[g1_edges_l %in% g2_edges_r] , g2_edges_r[g2_edges_r %in% g1_edges_l]) %>% unique()
+# Get share edges for  vl->vr ---------------------------------
+if(((".waiting_edge_left" %in% names(as_tibble(activate(vr ,"nodes")))) & 
+  (".waiting_edge_right" %in% names(as_tibble(activate(vl ,"nodes")))))){
+  vr_edges_l <- pull(vr ,.waiting_edge_left) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + e(name = ".tmp") +.x)  %>%  flatten  %>% keep(~ .x[["name"]] != ".tmp")
+  vl_edges_r <- pull(vl ,.waiting_edge_right) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + e(name = ".tmp") +.x) %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
+  shared_edges_vlvr <- append(vr_edges_l[vr_edges_l %in% vl_edges_r] , vl_edges_r[vl_edges_r %in% vr_edges_l]) %>% unique()
 } 
    
-# Get share edges for  g1->g2 ---------------------------------
+# Get share edges for  vr->vl ---------------------------------
    
-if(((".waiting_edge_right" %in% names(as_tibble(activate(g2 ,"nodes")))) & 
-   (".waiting_edge_left" %in% names(as_tibble(activate(g1 ,"nodes")))))){
- g1_edges_r <- pull(g1 ,.waiting_edge_right) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + .x)  %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
- g2_edges_l <- pull(g2 ,.waiting_edge_left) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + .x)  %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
- shared_edges_g1g2 <- append(g1_edges_r[g1_edges_r %in% g2_edges_l] , g2_edges_l[g2_edges_l %in% g1_edges_r]) %>% unique()
+if(((".waiting_edge_right" %in% names(as_tibble(activate(vl ,"nodes")))) & 
+   (".waiting_edge_left" %in% names(as_tibble(activate(vr ,"nodes")))))){
+ vr_edges_r <- pull(vr ,.waiting_edge_right) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + e(name = ".tmp") + .x )  %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
+ vl_edges_l <- pull(vl ,.waiting_edge_left) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + e(name = ".tmp") + .x)  %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
+ shared_edges_vrvl <- append(vr_edges_r[vr_edges_r %in% vl_edges_l] , vl_edges_l[vl_edges_l %in% vr_edges_r]) %>% unique()
 }
    
 # If no shared edges, standard graph join ------------------------------------
-if(length(shared_edges_g1g2) ==0 & length(shared_edges_g2g1) == 0 ){
-  return_graph <- tidygraph::graph_join(g1, g2) 
+if(length(shared_edges_vrvl) ==0 & length(shared_edges_vlvr) == 0 ){
+  return_graph <- tidygraph::graph_join(vr, vl) 
   return(return_graph)
 }
    
 # Get shared edges and their locations ---------------------------------------- 
  
- edge_checks_g2g1 <- list()
- edge_checks_g1g2 <- list()
-# g2->g1
-if(shared_edges_g2g1 %>% keep(~ !is.null(.)) %>% length() %>% `>`(0)){
-  edge_checks_g2g1 <- map(shared_edges_g2g1, locate_share_edges,g2 = g2, g1 =g1)
-  
-  new_joins_g2g1 <- edge_checks_g2g1 %>% map("graph") %>% reduce(tidygraph::graph_join)
-  g1_edges_to_drop_g2g1 <-  map(edge_checks_g2g1,"g1_matches") %>% reduce(either)
-  g2_edges_to_drop_g2g1 <-  map(edge_checks_g2g1,"g2_matches") %>% reduce(either)
+ edge_checks_vlvr <- list()
+ edge_checks_vrvl <- list()
+# vl->vr
+ 
+if(shared_edges_vlvr %>% keep(~ !is.null(.)) %>% length() %>% `>`(0)){
+  edge_checks_vlvr <- map(shared_edges_vlvr, locate_share_edges,vl = vl, vr =vr)
+  new_joins_vlvr <- edge_checks_vlvr %>% map("graph") %>% reduce(tidygraph::graph_join)
+  new_joins_vlvr <- new_joins_vlvr %>% select(-matches(".waiting"))
+  # diagram(new_joins_vlvr)
+  vr_edges_to_drop_vlvr <-  map(edge_checks_vlvr,"vr_matches") %>% reduce(either)
+  vl_edges_to_drop_vlvr <-  map(edge_checks_vlvr,"vl_matches") %>% reduce(either)
 }
 
-# g1->g2
-if(shared_edges_g1g2 %>% keep(~ !is.null(.)) %>% length() %>% `>`(0)){
-  edge_checks_g1g2 <- map(shared_edges_g1g2, locate_share_edges,g2 = g1, g1 =g2) 
-   
-  new_joins_g1g2 <- edge_checks_g1g2 %>% map("graph") %>% reduce(tidygraph::graph_join) %>% select(-matches("^\\.waiting"))
-  g1_edges_to_drop_g1g2 <-  map(edge_checks_g1g2,"g1_matches") %>% reduce(either)
-  g2_edges_to_drop_g1g2 <-  map(edge_checks_g1g2,"g2_matches") %>% reduce(either)
+# vr->vl
+ # browser()
+if(shared_edges_vrvl %>% keep(~ !is.null(.)) %>% length() %>% `>`(0)){
+  edge_checks_vrvl <- map(shared_edges_vrvl, locate_share_edges,vl = vr, vr =vl) 
+  new_joins_vrvl <- edge_checks_vrvl %>% map("graph") %>% reduce(tidygraph::graph_join) %>% select(-matches("^\\.waiting"))
+  new_joins_vrvl <- new_joins_vrvl %>% select(-matches(".waiting"))
+  # diagram(new_joins_vrvl) 
+  vr_edges_to_drop_vrvl <-  map(edge_checks_vrvl,"vr_matches") %>% reduce(either)
+  vl_edges_to_drop_vrvl <-  map(edge_checks_vrvl,"vl_matches") %>% reduce(either)
  }
 
- g1_new <- g1
- g2_new <- g2
+ vr_new <- vr
+ vl_new <- vl
  
  
-# If only shared in g1->g2, use those 
-if(length(edge_checks_g2g1)==0 & length(edge_checks_g1g2)>0){
-  new_joins <- new_joins_g1g2 
+# If only shared in vr->vl, use those 
+if(length(edge_checks_vlvr)==0 & length(edge_checks_vrvl)>0){
+  new_joins <- new_joins_vrvl 
 }
-# If only shared in g2->g1 , use those 
-if(length(edge_checks_g2g1)>0 & length(edge_checks_g1g2)==0){
-  new_joins <- new_joins_g2g1
+# If only shared in vl->vr , use those 
+if(length(edge_checks_vlvr)>0 & length(edge_checks_vrvl)==0){
+  new_joins <- new_joins_vlvr
 }
 # Combine info from each direction 
- if(length(edge_checks_g2g1)>0 & length(edge_checks_g1g2)>0){
-   new_joins <- tidygraph::graph_join(new_joins_g1g2, new_joins_g2g1) 
+ if(length(edge_checks_vlvr)>0 & length(edge_checks_vrvl)>0){
+   new_joins <- tidygraph::graph_join(new_joins_vrvl, new_joins_vlvr) 
  }
  
  # Drop old waiting edges 
   # browser()
- #g1(left) g2(right)
-if(length(shared_edges_g2g1)>0){
-  g1_left_edges <- pull(g1_new,.waiting_edge_left)
-  if(depth(g1_left_edges) ==2){g1_expanded_left <-T; g1_left_edges <- list(g1_left_edges)}
-  g1_left_edges_to_remove <- map(g1_left_edges, ~ map_lgl(.x, ~ .x %in% shared_edges_g2g1))
-  if(exists("g1_expanded_left")){g1_right_edges_to_remove <-  g1_right_edges_to_remove[[1]]}
-  g1_left_edge_replacements <- map2(g1_left_edges,g1_left_edges_to_remove, ~ .x[!.y])
-  g1_new <- g1_new %>% mutate(.waiting_edge_left = g1_left_edge_replacements)
-
-  g2_right_edges <- pull(g2_new,.waiting_edge_right)
-  if(depth(g2_right_edges) ==2){g2_expanded_right <- T ;g2_right_edges <- list(g2_right_edges)}
-  g2_right_edges_to_remove <- map(g2_right_edges, ~ map(.x, ~ .x %in% shared_edges_g2g1))
+ #vr(left) vl(right)
+if(length(shared_edges_vlvr)>0){
+  vr_left_edges <- pull(vr_new,.waiting_edge_left)
+  if(depth(vr_left_edges) ==2){vr_expanded_left <-T; vr_left_edges <- list(vr_left_edges)}
+  vr_left_edges_to_remove <- map(vr_left_edges, ~ map_lgl(.x, ~ unlist(.x) %in% unlist(shared_edges_vlvr)))
+  if(exists("vr_expanded_left")){vr_left_edges_to_remove <-  vr_left_edges_to_remove[[1]]}
+  vr_left_edge_replacements <- map2(vr_left_edges,vr_left_edges_to_remove, ~ .x[!.y])
+  vr_new <- vr_new %>% mutate(.waiting_edge_left = vr_left_edge_replacements)
+  vl_right_edges <- pull(vl_new,.waiting_edge_right)
+  if(depth(vl_right_edges) ==2){vl_expanded_right <- T ;vl_right_edges <- list(vl_right_edges)}
+  vl_right_edges_to_remove <- map(vl_right_edges, ~ map_lgl(.x, ~ unlist(.x) %in% unlist(shared_edges_vlvr)))
   ##!!#! do same above
-  if(exists("g2_expanded_right")){g2_right_edges_to_remove <-  g2_right_edges_to_remove[[1]]}
-  g2_right_edge_replacements <- map2(g2_right_edges,g2_right_edges_to_remove, ~ .x[!.y])
-  g2_new <- g2_new %>% mutate(.waiting_edge_right = g2_right_edge_replacements)
-  
+  if(exists("vl_expanded_right")){vl_right_edges_to_remove <-  vl_right_edges_to_remove[[1]]}
+  vl_right_edge_replacements <- map2(vl_right_edges,vl_right_edges_to_remove, ~ .x[!.y])
+  vl_new <- vl_new %>% mutate(.waiting_edge_right = vl_right_edge_replacements)
     
 }
   
-
- #g2(left) g1(right)
-
-if(length(shared_edges_g1g2)>0){
-  g2_left_edges <- pull(g2_new,.waiting_edge_left)
-  if(depth(g2_left_edges) ==2){g2_expanded_left <-T; g2_left_edges <- list(g2_left_edges)}
-  g2_left_edges_to_remove <- map(g2_left_edges, ~ map_lgl(.x, ~ .x == shared_edges_g1g2))
-  if(exists("g2_expanded_left")){g1_right_edges_to_remove <-  g1_right_edges_to_remove[[1]]}
-  g2_left_edge_replacements <- map2(g2_left_edges,g2_left_edges_to_remove, ~ .x[!.y])
-  g2_new <- g2_new %>% mutate(.waiting_edge_left = g2_left_edge_replacements)
+ #vl(left) vr(right)
+# browser()
+if(length(shared_edges_vrvl)>0){
+  vl_left_edges <- pull(vl_new,.waiting_edge_left)
+  if(depth(vl_left_edges) ==2){vl_expanded_left <-T; vl_left_edges <- list(vl_left_edges)}
+  vl_left_edges_to_remove <- map(vl_left_edges, ~ map_lgl(.x, ~ unlist(.x) %in% unlist(shared_edges_vrvl)))  
+  if(exists("vl_expanded_left")){vl_left_edges_to_remove <-  vl_left_edges_to_remove[[1]]}
+  vl_left_edge_replacements <- map2(vl_left_edges,vl_left_edges_to_remove, ~ .x[!.y])
+  vl_new <- vl_new %>% mutate(.waiting_edge_left = vl_left_edge_replacements)
   
-  g1_right_edges <- pull(g1_new,.waiting_edge_right)
-  if(depth(g1_right_edges) ==2){g1_expanded_right <- T ;g1_right_edges <- list(g1_right_edges)}
-  g1_right_edges_to_remove <- map(g1_right_edges, ~ map(.x, ~ .x == shared_edges_g1g2)) 
+  vr_right_edges <- pull(vr_new,.waiting_edge_right)
+  if(depth(vr_right_edges) ==2){vr_expanded_right <- T ;vr_right_edges <- list(vr_right_edges)}
+  vr_right_edges_to_remove <- map(vr_right_edges, ~ map_lgl(.x, ~ unlist(.x) %in% unlist(shared_edges_vrvl)))
   ##!!#! do same above
-  if(exists("g1_expanded_right")){g1_right_edges_to_remove <-  g1_right_edges_to_remove[[1]]}
-  g1_right_edge_replacements <- map2(g1_right_edges,g1_right_edges_to_remove, ~ .x[!.y])
-  g1_new <- g1_new %>% mutate(.waiting_edge_right = g1_right_edge_replacements)  
+  if(exists("vr_expanded_right")){vr_right_edges_to_remove <-  vr_right_edges_to_remove[[1]]}
+  vr_right_edge_replacements <- map2(vr_right_edges,vr_right_edges_to_remove, ~ .x[!.y])
+  vr_new <- vr_new %>% mutate(.waiting_edge_right = vr_right_edge_replacements)  
 } 
 
+ # browser()
 
-# Join graphs and return 
+vr_new <- vr_new %>% mutate_at(.vars = vars(matches("^\\.waiting")), .funs = ~ map(., ~ if(length(.x)==0){NULL}else{.}))
+vl_new <- vl_new %>% mutate_at(.vars = vars(matches("^\\.waiting")), .funs = ~ map(., ~ if(length(.x)==0){NULL}else{.}))
  
-return_graph <- tidygraph::graph_join(g1_new, g2_new) %>% tidygraph::graph_join(.,new_joins) 
+# Join graphs and return 
+# diagram(vr_new)
+# diagram(vl_new)
+# diagram(new_joins)
+
+
+return_graph <- tidygraph::graph_join(vr_new, vl_new) %>% tidygraph::graph_join(.,new_joins) 
 
 diagram(return_graph)
+wleft <- return_graph %>% pull(.waiting_edge_left)
+wleft_new <-
+  map_if(wleft,map_lgl(wleft,~! any(str_detect(class(.x),"ralget"))), function(.x){ if(length(.x) == 0){return(NULL)}else{.x %>% reduce(`+`)}}) 
+
+wright <- return_graph %>% pull(.waiting_edge_right)
+wright_new <- 
+  map_if(wright,map_lgl(wright,~! any(str_detect(class(.x),"ralget"))), function(.x){ if(length(.x) == 0){return(NULL)}else{.x %>% reduce(`+`)}}) 
+  
+return_graph <- 
+return_graph %>% 
+  mutate(.waiting_edge_left = wleft_new) %>% 
+  mutate(.waiting_edge_right = wright_new) 
+  
 
 return(return_graph)
 
  
  }
   
-return_graph <- tidygraph::graph_join(g1, g2) 
+return_graph <- tidygraph::graph_join(vr, vl) 
 
 return(return_graph)
 }

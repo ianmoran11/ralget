@@ -28,34 +28,28 @@ components <-
      ((sugar + butter + yolk + lemon)  *  make_lemon_filling * lemon_filling) +
      (white * make_meringue * meringue)
 
-  a1 <- ((meringue + unbaked_lemon_pie)* add_meringue * unbaked_pie) 
-  a2 <- ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)  
+assembly <- 
+  ((meringue + unbaked_lemon_pie)* add_meringue * unbaked_pie) +
+   ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)  
 
- a1 %>% diagram() 
- a2 %>% diagram()  
-(a1 + a2) %>% activate("edges") %>% select(-.waiting_edge_left) %>% activate("nodes") %>% diagram()
-  
-assembly <-   a1 + a2
-  
+
+
+a1 <-   ((meringue + unbaked_lemon_pie)* add_meringue * unbaked_pie) 
+a2 <- ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)  
+
+
+diagram(a1 + a2)
+
+ 
 assembly %>% diagram()
 egg_step %>% diagram()
 components %>% diagram()
 
-
-pull(assembly,.waiting_edge_left) %>% str()
-pull(assembly,.waiting_edge_right) %>% str()
-
-
-(components + assembly) %>% diagram()
-
-
-(egg_step + components)  %>% diagram()
+# Ubaked pie is turning into a character- fix
 (assembly + components) %>% diagram()
 
-
-(assembly + components + egg_step) %>% diagram()
-
-(components + assembly) %>% diagram()
+(components + assembly + egg_step) %>% diagram()
+(egg_step + components + assembly) %>% diagram()
 
 (assembly + components) %>% diagram()
 diagram(graph)
@@ -72,6 +66,32 @@ g1 %>% diagram()
 (g2 + g1) %>% diagram
 
 (g1 + g2) %>% diagram
+
+rvreo1        <- e(name = "rvreo1")       
+rvreo2        <- e(name = "rvreo2")       
+lvles1rvres1 <- e(name = "lvles1rvres1") 
+lvles2rvres2 <- e(name = "lvles2rvres2") 
+rvleo1        <- e(name = "rvleo1")       
+rvleo2        <- e(name = "rvleo2")       
+lvres1rvles1  <- e(name = "lvres1rvles1") 
+lvres2rvles2  <- e(name = "lvres2rvles2") 
+lvreo1        <- e(name = "lvreo1")       
+lvreo2        <- e(name = "lvreo2")       
+lvleo1        <- e(name = "lvleo1")       
+lvleo2        <- e(name = "lvleo2")       
+
+
+vl <- v(name = "vl")
+vr <- v(name = "vr")
+
+vl_e <- (lvleo1 + lvleo2 + lvles1rvres1 + lvles2rvres2) * vl * (lvreo1 + lvreo2 + lvres1rvles1 + lvres2rvles2)
+vr_e <- (rvleo1 + rvleo2 + lvres1rvles1 + lvres2rvles2) * vr * (rvreo1 + rvreo2 + lvles1rvres1 + lvles2rvres2)
+
+diagram(vl_e + vr_e)
+
+
+
+
 
 
 
