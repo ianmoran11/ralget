@@ -41,8 +41,8 @@ a2 <- ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)
 diagram(a1 + a2)
 
  
-assembly %>% diagram()
 egg_step %>% diagram()
+assembly %>% diagram() 
 components %>% diagram()
 
 # Ubaked pie is turning into a character- fix
@@ -90,13 +90,50 @@ vr_e <- (rvleo1 + rvleo2 + lvres1rvles1 + lvres2rvles2) * vr * (rvreo1 + rvreo2 
 diagram(vl_e + vr_e)
 
 
+oil            <- e(name = "oil")
+onion          <- e(name = "onion")
+garlic         <- e(name = "garlic")
+mince          <- e(name = "mince")
+tomato         <- e(name = "tomato") 
+wine           <- e(name = "wine") 
+tomato_paste   <- e(name = "tomato_paste")
+salt           <- e(name = "salt")
+pepper         <- e(name = "pepper")
+milk           <- e(name = "milk")
+onion          <- e(name = "onion")
+parsely_stalks <- e(name = "parsely_stalks")
+peppercorns    <- e(name = "peppercorns")
+cloves         <- e(name = "cloves") 
+bay_leaves     <- e(name = "bay_leaves")
+butter         <- e(name = "butter")
+flour          <- e(name = "flour")
+permesan       <- e(name = "permesan")
+nutmeg         <- e(name = "nutmeg") 
+salt           <- e(name = "salt")
+pepper         <- e(name = "pepper")
+mozzarlla      <- e(name = "mozzarlla")
+
+onion_mix <- e(name = "onion_mix")
+tomato_sauce <- e(name= "tomato_sauce")
 
 
+(
+((oil + onion + garlic) * v("cook") * onion_mix) +
+((e("onion_mix") + tomato + wine + tomato_paste) * v("stir") * tomato_sauce) +
+((salt + pepper + tomato_sauce) * v("add") * e("seasoned_tomato_sauce"))
+) %>% diagram
 
+make_tomato_sauce <- 
+(
+((oil + onion + garlic) * v("cook") * onion_mix) +
+(((e("onion_mix") + tomato + wine + tomato_paste) * v("stir") * tomato_sauce) +
+((salt + pepper + tomato_sauce) * v("add") * e("seasoned tomato sauce")))) 
 
+make_white_sauce <- 
+(((milk + onion + parsely_stalks + peppercorns + cloves + bay_leaves) * v("combine and simmine") * e("white suauce prem")) +
+  (e("white suauce prem") + butter + flour + milk) * v("combine") * e("white sauce")) 
 
+layer_combonents <- 
+  ((e("white sauce") + e("seasoned tomato sauce")) * v("layer") * e("unbaked lasange"))
 
-
-
-
-
+(make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% diagram()
