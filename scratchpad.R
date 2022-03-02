@@ -50,6 +50,11 @@ components %>% diagram()
 
 (components + assembly + egg_step) %>% diagram()
 (egg_step + components + assembly) %>% diagram()
+s1 <- (egg_step + components) 
+
+(s1 + assembly) 
+
++ assembly) %>% diagram()
 
 (assembly + components) %>% diagram()
 diagram(graph)
@@ -136,4 +141,4 @@ make_white_sauce <-
 layer_combonents <- 
   ((e("white sauce") + e("seasoned tomato sauce")) * v("layer") * e("unbaked lasange"))
 
-(make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% diagram()
+(make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% 

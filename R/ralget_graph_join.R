@@ -85,13 +85,14 @@ if(length(edge_checks_vlvr)>0 & length(edge_checks_vrvl)==0){
 if(length(shared_edges_vlvr)>0){
   vr_left_edges <- pull(vr_new,.waiting_edge_left)
   if(depth(vr_left_edges) ==2){vr_expanded_left <-T; vr_left_edges <- list(vr_left_edges)}
-  vr_left_edges_to_remove <- map(vr_left_edges, ~ map_lgl(.x, ~ (unlist(.x) %in% unlist(shared_edges_vlvr)) %>% ifelse(length(.) ==0, F, .)))
+  vr_left_edges_to_remove <- map(vr_left_edges, ~ map_lgl(.x, ~ (unlist(.x) %in% unlist(shared_edges_vlvr)) %>% ifelse(length(.) ==0, T, .)))
   if(exists("vr_expanded_left")){vr_left_edges_to_remove <-  vr_left_edges_to_remove[[1]]}
   vr_left_edge_replacements <- map2(vr_left_edges,vr_left_edges_to_remove, ~ .x[!.y])
   vr_new <- vr_new %>% mutate(.waiting_edge_left = vr_left_edge_replacements)
+  
   vl_right_edges <- pull(vl_new,.waiting_edge_right)
   if(depth(vl_right_edges) ==2){vl_expanded_right <- T ;vl_right_edges <- list(vl_right_edges)}
-  vl_right_edges_to_remove <- map(vl_right_edges, ~ map_lgl(.x,~ (unlist(.x) %in% unlist(shared_edges_vlvr))  %>% ifelse(length(.) ==0, F, .)))
+  vl_right_edges_to_remove <- map(vl_right_edges, ~ map_lgl(.x,~ (unlist(.x) %in% unlist(shared_edges_vlvr))  %>% ifelse(length(.) ==0, T, .)))
   ##!!#! do same above
   if(exists("vl_expanded_right")){vl_right_edges_to_remove <-  vl_right_edges_to_remove[[1]]}
   vl_right_edge_replacements <- map2(vl_right_edges,vl_right_edges_to_remove, ~ .x[!.y])
@@ -104,14 +105,14 @@ if(length(shared_edges_vlvr)>0){
 if(length(shared_edges_vrvl)>0){
   vl_left_edges <- pull(vl_new,.waiting_edge_left)
   if(depth(vl_left_edges) ==2){vl_expanded_left <-T; vl_left_edges <- list(vl_left_edges)}
-  vl_left_edges_to_remove <- map(vl_left_edges, ~ map_lgl(.x, ~ (unlist(.x) %in% unlist(shared_edges_vrvl)) %>% ifelse(length(.) ==0, F, .)))  
+  vl_left_edges_to_remove <- map(vl_left_edges, ~ map_lgl(.x, ~ (unlist(.x) %in% unlist(shared_edges_vrvl)) %>% ifelse(length(.) ==0, T, .)))  
   if(exists("vl_expanded_left")){vl_left_edges_to_remove <-  vl_left_edges_to_remove[[1]]}
   vl_left_edge_replacements <- map2(vl_left_edges,vl_left_edges_to_remove, ~ .x[!.y])
   vl_new <- vl_new %>% mutate(.waiting_edge_left = vl_left_edge_replacements)
   
   vr_right_edges <- pull(vr_new,.waiting_edge_right)
   if(depth(vr_right_edges) ==2){vr_expanded_right <- T ;vr_right_edges <- list(vr_right_edges)}
-  vr_right_edges_to_remove <- map(vr_right_edges, ~ map_lgl(.x, ~ (unlist(.x) %in% unlist(shared_edges_vrvl)) %>% ifelse(length(.) ==0, F, .)))
+  vr_right_edges_to_remove <- map(vr_right_edges, ~ map_lgl(.x, ~ (unlist(.x) %in% unlist(shared_edges_vrvl)) %>% ifelse(length(.) ==0, T, .)))
   ##!!#! do same above
   if(exists("vr_expanded_right")){vr_right_edges_to_remove <-  vr_right_edges_to_remove[[1]]}
   vr_right_edge_replacements <- map2(vr_right_edges,vr_right_edges_to_remove, ~ .x[!.y])
