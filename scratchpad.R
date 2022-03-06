@@ -22,6 +22,59 @@ meringue <- e(name = "Meringue")
 unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
 unbaked_pie <- e(name = "Unbaked pie")
 
+
+
+
+meringue_recipe <- 
+(
+  (egg * separate_egg) +
+  (separate_egg * (yolk + white)) +
+  ((yolk + sugar + butter + lemon) * make_lemon_filling)  +
+  ((sugar + white) * make_meringue) +
+  (make_lemon_filling * lemon_filling) +
+  (make_meringue * meringue) +
+  (lemon_filling * fill_crust) +
+  (fill_crust * unbaked_lemon_pie) +
+  ((unbaked_lemon_pie + meringue) * add_meringue) + 
+  (add_meringue * unbaked_lemon_pie) 
+) 
+
+meringue_recipe %>% diagram
+
+
+g1 <- 
+  (egg * separate_egg) +
+  (separate_egg * (yolk + white)) +
+  ((yolk + sugar + butter + lemon) * make_lemon_filling)  +
+  ((sugar + white) * make_meringue) +
+  (make_lemon_filling * lemon_filling)  +
+  (make_meringue * meringue) 
+  
+  
+ g2 <-  
+  (lemon_filling * fill_crust) 
+
+g1 %>% diagram 
+g2 %>% diagram  
+(g1 + g2) %>% diagram
+
+
+
+install.packages("Hmisc")
+
+
+library()
+
+
+
+
+
+
+
+
+
+
+
 egg_step <-  (egg * separate_egg * (yolk +  white))
 
 components <-
@@ -52,7 +105,7 @@ components %>% diagram()
 (egg_step + components + assembly) %>% diagram()
 s1 <- (egg_step + components) 
 
-(s1 + assembly) 
+(s1 + assembly)  %>% diagram
 
 + assembly) %>% diagram()
 
@@ -128,11 +181,8 @@ tomato_sauce <- e(name= "tomato_sauce")
 ((salt + pepper + tomato_sauce) * v("add") * e("seasoned_tomato_sauce"))
 ) %>% diagram
 
-make_tomato_sauce <- 
-(
-((oil + onion + garlic) * v("cook") * onion_mix) +
-(((e("onion_mix") + tomato + wine + tomato_paste) * v("stir") * tomato_sauce) +
-((salt + pepper + tomato_sauce) * v("add") * e("seasoned tomato sauce")))) 
+
+
 
 make_white_sauce <- 
 (((milk + onion + parsely_stalks + peppercorns + cloves + bay_leaves) * v("combine and simmine") * e("white suauce prem")) +
@@ -141,4 +191,4 @@ make_white_sauce <-
 layer_combonents <- 
   ((e("white sauce") + e("seasoned tomato sauce")) * v("layer") * e("unbaked lasange"))
 
-(make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% 
+(make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% diagram

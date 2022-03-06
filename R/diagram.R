@@ -43,7 +43,7 @@ diagram <- function(graph){
 internode_joins <- tibble(from = NA_character_, edge_name = NA_character_, to = NA_character_) %>% filter(F)
 if(graph %>% activate("edges") %>% as_tibble() %>% nrow() %>% `>`(0)){
   edge_df <- graph %>% activate("edges") %>% get_edge_names() %>% mutate(node_list = pmap(list(from_name, .attrs, to_name), ~ list(..1,unlist(..2),..3))) 
-  internode_joins <- edge_df %>% pull(node_list) %>% map_df(~ as.data.frame(.x) %>% set_names(c("from","edge_name","to")) %>% as_tibble)
+  internode_joins <- edge_df %>% pull(node_list) %>% map( ~ .x %>% keep(~ !is.null(.x)))  %>% map(~ as.data.frame(.x)) %>% map(~ .x %>% set_names(c("from","edge_name","to"))) %>% map_df(as_tibble)
 }
 
 dot_in <- tibble(from = NA_character_, edge_name = NA_character_, to = NA_character_) %>% filter(F)
@@ -64,7 +64,7 @@ edge_txt <- list(internode_joins , dot_in, dot_out) %>% keep(is.data.frame) %>% 
 diagram_txt <- 
 paste0("\ndigraph rmarkdown{\nrankdir = TB\nnode [ shape = box , fontname = Arial]\n",box_names,"\n\nnode [ shape = point , fontname = Arial]\n",point_names,"\n\n",edge_txt,"}")
 
-diagram_txt %>% cat()
+# diagram_txt %>% cat()
 
 diagram_txt %>% DiagrammeR::grViz()
   

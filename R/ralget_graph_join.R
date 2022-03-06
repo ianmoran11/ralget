@@ -23,8 +23,8 @@ if(((".waiting_edge_left" %in% names(as_tibble(activate(vr ,"nodes")))) &
    
 # Get share edges for  vr->vl ---------------------------------
    
-if(((".waiting_edge_right" %in% names(as_tibble(activate(vl ,"nodes")))) & 
-   (".waiting_edge_left" %in% names(as_tibble(activate(vr ,"nodes")))))){
+if(((".waiting_edge_right" %in% names(as_tibble(activate(vr ,"nodes")))) & 
+   (".waiting_edge_left" %in% names(as_tibble(activate(vl ,"nodes")))))){
  vr_edges_r <- pull(vr ,.waiting_edge_right) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + e(name = ".tmp") + .x )  %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
  vl_edges_l <- pull(vl ,.waiting_edge_left) %>% map_if(~ !"ralget_edge_list" %in% class(.),~ e(name = ".tmp") + e(name = ".tmp") + .x)  %>% flatten %>% keep(~ .x[["name"]] != ".tmp")
  shared_edges_vrvl <- append(vr_edges_r[vr_edges_r %in% vl_edges_l] , vl_edges_l[vl_edges_l %in% vr_edges_r]) %>% unique()
@@ -146,7 +146,6 @@ return_graph %>%
   mutate(.waiting_edge_left = wleft_new) %>% 
   mutate(.waiting_edge_right = wright_new) 
   
-
 return(return_graph)
 
  
