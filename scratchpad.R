@@ -2,7 +2,13 @@ library(ralget)
 library(tidyverse)
 library(tidygraph)
 library(devtools)
+library(Hmisc)
 load_all()
+
+l <- list(list("one", "two"), list("three 1", "three 2", list("three - 3 1", "three - 3 2 ")))
+
+list.tree(l,depth = Inf)
+
 
 make_lemon_filling  <- v(name = "Make lemon filling")
 separate_egg  <- v(name = "Separate egg")
@@ -22,12 +28,13 @@ meringue <- e(name = "Meringue")
 unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
 unbaked_pie <- e(name = "Unbaked pie")
 
-
-
+class(meringue_recipe)
+meringue_recipe %>% print()
+meringue_recipe %>% print.ralget()
 
 meringue_recipe <- 
 (
-  (egg * separate_egg) +
+  (egg * separate_egg)  +
   (separate_egg * (yolk + white)) +
   ((yolk + sugar + butter + lemon) * make_lemon_filling)  +
   ((sugar + white) * make_meringue) +
@@ -35,12 +42,9 @@ meringue_recipe <-
   (make_meringue * meringue) +
   (lemon_filling * fill_crust) +
   (fill_crust * unbaked_lemon_pie) +
-  ((unbaked_lemon_pie + meringue) * add_meringue) + 
-  (add_meringue * unbaked_lemon_pie) 
+  ((unbaked_lemon_pie + meringue) * add_meringue * unbaked_lemon_pie) 
 ) 
-
 meringue_recipe %>% diagram
-
 
 g1 <- 
   (egg * separate_egg) +
@@ -58,12 +62,17 @@ g1 %>% diagram
 g2 %>% diagram  
 (g1 + g2) %>% diagram
 
+print.list <- function(x){ list.tree(x)}
+list.print <- function(x){ list.tree(x)}
+
+g1 %>% pull(.waiting_edge_right) %>% list.tree()
+g2 %>% pull(.waiting_edge_left) %>% list.tree()
+
 
 
 install.packages("Hmisc")
 
 
-library()
 
 
 
@@ -147,6 +156,7 @@ vr_e <- (rvleo1 + rvleo2 + lvres1rvles1 + lvres2rvles2) * vr * (rvreo1 + rvreo2 
 
 diagram(vl_e + vr_e)
 
+vl_e + vr_e
 
 oil            <- e(name = "oil")
 onion          <- e(name = "onion")

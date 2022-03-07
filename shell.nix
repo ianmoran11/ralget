@@ -24,6 +24,7 @@ let
       ggdag
       microbenchmark
       DiagrammeR
+      Hmisc
     ];
   };
 in mkShell {
