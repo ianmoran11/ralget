@@ -1,4 +1,9 @@
 
+#' Create ralget edge
+#'
+#' @param ...  objects stored as vertex attributes.
+#' @export
+ 
 ralget_graph_join <- function(vl, vr){
  # browser()
   

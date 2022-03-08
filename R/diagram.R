@@ -1,3 +1,11 @@
+
+#' Add two ralget graphs
+#'
+#' @param v1 a ralget graph
+#' @param v2 a ralget graph
+#' @return ralget
+#' @export
+
 diagram <- function(graph){
 # library(ralget) 
 # library(tidyverse)

@@ -1,14 +1,14 @@
-library(ralget)
 library(tidyverse)
+library(purrr)
 library(tidygraph)
 library(devtools)
 library(Hmisc)
-load_all()
+# devtools::document()
+# devtools::install(".")
+# remove.packages("ralget")
+library(ralget)
 
-l <- list(list("one", "two"), list("three 1", "three 2", list("three - 3 1", "three - 3 2 ")))
-
-list.tree(l,depth = Inf)
-
+# load_all()
 
 make_lemon_filling  <- v(name = "Make lemon filling")
 separate_egg  <- v(name = "Separate egg")
@@ -28,10 +28,6 @@ meringue <- e(name = "Meringue")
 unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
 unbaked_pie <- e(name = "Unbaked pie")
 
-class(meringue_recipe)
-meringue_recipe %>% print()
-meringue_recipe %>% print.ralget()
-
 meringue_recipe <- 
 (
   (egg * separate_egg)  +
@@ -45,6 +41,11 @@ meringue_recipe <-
   ((unbaked_lemon_pie + meringue) * add_meringue * unbaked_lemon_pie) 
 ) 
 meringue_recipe %>% diagram
+
+
+class(meringue_recipe)
+meringue_recipe %>% print()
+meringue_recipe %>% print.ralget()
 
 g1 <- 
   (egg * separate_egg) +

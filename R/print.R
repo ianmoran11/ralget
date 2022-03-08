@@ -1,3 +1,7 @@
+#' @export
+#' @S3method  print mmtable
+#' @importFrom magrittr %>%
+#' 
 print.ralget <- function(x,...){
   
  d <- diagram(x)  
@@ -6,4 +10,6 @@ print.ralget <- function(x,...){
  print(x) 
   
  print(d)
+ 
+ invisible(x)
 }
