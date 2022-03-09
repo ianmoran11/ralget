@@ -1,11 +1,12 @@
+rm(list = ls())
 library(tidyverse)
 library(purrr)
 library(tidygraph)
 library(devtools)
 library(Hmisc)
-# devtools::document()
-# devtools::install(".")
-# remove.packages("ralget")
+devtools::document()
+devtools::install(".")
+remove.packages("ralget")
 library(ralget)
 
 # load_all()
@@ -203,3 +204,72 @@ layer_combonents <-
   ((e("white sauce") + e("seasoned tomato sauce")) * v("layer") * e("unbaked lasange"))
 
 (make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% diagram
+
+
+
+
+
+
+
+# load_all()
+
+make_lemon_filling  <- v(name = "Make lemon filling")
+separate_egg  <- v(name = "Separate egg")
+make_meringue  <- v(name = "Make meringue")
+fill_crust  <- v(name = "Fill crust")
+add_meringue  <- v(name = "Add meringue")
+
+prepared_crust <- e(name = "Prepared crust")
+lemon <- e(name = "Lemon")
+butter <- e(name = "Butter")
+sugar <- e(name = "Sugar")
+egg <- e(name = "Egg")
+yolk <- e(name = "Yolk")
+white <- e(name = "White")
+lemon_filling <- e(name = "Lemon filling")
+meringue <- e(name = "Meringue")
+unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
+unbaked_pie <- e(name = "Unbaked pie")
+
+recipe <- 
+(egg * separate_egg)  +
+(separate_egg * (yolk + white)) +
+((yolk + sugar + butter + lemon) * make_lemon_filling)  +
+((sugar + white) * make_meringue) +
+(make_lemon_filling * lemon_filling) +
+(make_meringue * meringue) +
+(lemon_filling * fill_crust) +
+(fill_crust * unbaked_lemon_pie) +
+((unbaked_lemon_pie + meringue) * add_meringue * unbaked_lemon_pie) 
+
+as_tibble(recipe) %>% pull(.waiting_edge_left) %>% map(class)
+
+as_tibble(recipe) %>% mutate(row_now = row_number()) %>% 
+  group_by(name) %>% 
+  summarise(
+    .attrs = list(.attrs),
+            .waiting_edge_left = aggregator(.waiting_edge_left),
+            .waiting_edge_right = aggregator(.waiting_edge_left),
+    old_rows = list(row_now)
+            ) 
+  # mutate(.waiting_edge_left = map_if(.waiting_edge_left ,is.character,~ e(name = .x))) %>% 
+  # mutate(.waiting_edge_right = map_if(.waiting_edgekkk_right ,is.character,~ e(name = .x)))
+
+
+  
+ as_tibble(recipe) %>% mutate(row_now = row_number()) %>% pull(.waiting_edge_left) %>% 
+   keep(~ !is.null(.)) %>% reduce(`+`)
+
+
+ 
+( e("one") + e("two") ) + (e("three") + e("four"))
+  
+  
+  
+  
+  
+
+
+
+
+

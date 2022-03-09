@@ -8,6 +8,8 @@
 #' @S3method  "+" ralget_edge
 
 `+.ralget_edge` <- function(v1,v2){
+  if(is.null(v1)){return(v2)}
+  if(is.null(v2)){return(v1)}
   overlay(v1,v2)
 }
 
