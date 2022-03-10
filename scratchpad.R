@@ -42,6 +42,9 @@ meringue_recipe <-
 meringue_recipe %>% diagram
 
 
+meringue_recipe %>% compact()
+
+
 class(meringue_recipe)
 meringue_recipe %>% print()
 meringue_recipe %>% print.ralget()
@@ -242,32 +245,8 @@ recipe <-
 
 as_tibble(recipe) %>% pull(.waiting_edge_left) %>% map(class)
 
-node_df <- 
-as_tibble(recipe) %>% mutate(row_now = row_number()) %>% 
-  group_by(name) %>% 
-  summarise(
-    .attrs = list(.attrs),
-            .waiting_edge_left = aggregator(.waiting_edge_left),
-            .waiting_edge_right = aggregator(.waiting_edge_right),
-    old_rows = list(row_now)
-            )  %>% 
-   mutate(new_rows = row_number())
+recipe %>% compact()
 
-new_edges_df_from <- node_df %>% select(old_rows, new_rows) %>% unnest %>% unique() %>% rename(from = old_rows, new_from = new_rows)
-new_edges_df_to <- node_df %>% select(old_rows, new_rows) %>% unnest %>% unique() %>% rename(to = old_rows, new_to = new_rows)
-
-edge_df <- as_tibble(activate(recipe, "edges")) 
-
-new_edge_df <- 
-edge_df %>% left_join(new_edges_df_rows) %>% left_join(new_edges_df_to) %>% 
-  select(-from,-to) %>% select(from = new_from, to = new_to, everything())
-
-new_graph <- tbl_graph(nodes = node_df, edges = new_edge_df) 
-
-recipe
-
-class(new_graph) <- c("ralget", class(new_graph))
-new_graph
 
 
 

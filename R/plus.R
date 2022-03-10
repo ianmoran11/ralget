@@ -79,11 +79,20 @@ overlay <-  function(v1,v2){
   }
 
 ## ([V] + [V]) -> [V]
+  
+  
 suppressMessages(
   
+  
   g <- ralget_graph_join(v1, v2)
+ 
+  
 )
 
+# browser()
+
+  # 
+  g <- g %>% compact()
   g
 
 }
