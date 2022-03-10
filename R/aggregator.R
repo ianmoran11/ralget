@@ -1,4 +1,10 @@
 
+#' Cartesian product of two ralgets
+#'
+#' @param x ralget graph
+#' @param y ralget graph
+#' @export
+
 aggregator <-  function(edges){
  # browser() 
   
