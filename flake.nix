@@ -45,7 +45,7 @@
       };
     in {
     devShell."x86_64-linux" = pkgs.mkShell {
-    buildInputs = with pkgs; [ pandoc git  glibcLocales openssl which openssh curl wget  ];
+    buildInputs = with pkgs; [ R pandoc git  glibcLocales openssl which openssh curl wget  ];
     inputsFrom = [ my-r-pkgs ];
     shellHook = ''
       mkdir -p "$(pwd)/_libs"
