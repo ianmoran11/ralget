@@ -1,0 +1,1 @@
+either <- function(e1,e2){map2(e1,e2,~ map2_lgl(.x,.y,function(x,y)!(x|y)))}    
