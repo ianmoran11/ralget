@@ -5,10 +5,9 @@ library("devtools")
 library("DiagrammeR")
 devtools::document()
 devtools::install(".")
-
 library(ralget)
 
- load_all()
+# load_all()
 
 make_lemon_filling  <- v(name = "Make lemon filling")
 separate_egg  <- v(name = "Separate egg")
