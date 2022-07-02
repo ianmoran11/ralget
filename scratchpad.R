@@ -216,12 +216,3 @@ recipe %>% compact()
 
 ( e("one") + e("two") ) + (e("three") + e("four"))
   
-  
-  
-  
-  
-
-
-
-
-
