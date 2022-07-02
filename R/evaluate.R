@@ -57,10 +57,12 @@ evaluate_prepare <- function(g) {
 #' @export
 
 evaluate_execute <- function(g){
-# browser()
+browser()
 
 g_list <- 
   g %>% as_tibble() %>% ungroup() %>% map(~ .x) 
+
+  g %>% as_tibble() %>% ungroup() %>% pull(.attrs)
 
 eval_statement <-
   g_list %>% 

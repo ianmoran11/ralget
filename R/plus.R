@@ -92,7 +92,7 @@ suppressMessages(
 # browser()
 
   # 
-  g <- g %>% compact()
+  # g <- g %>% compact()
   g
 
 }
