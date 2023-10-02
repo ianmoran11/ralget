@@ -1,20 +1,21 @@
 rm(list = ls())
-library(devtools)
+library("devtools")
 library("tidyverse")
-library("ggdag")
 library("tidygraph")
-library("dagitty")
+library("ggdag")
 library("ggraph")
 library("patchwork")
+library("dagitty")
 library("magrittr")
 library("ggforce")
 library("boot")
 library("conflicted")
 library("stringr")
-library("stringr")
 library("stringi")
 library("purrr")
-library(tidyverse)
+library("tidyverse")
+library("DiagrammeR")
+
 conflict_prefer("filter", "dplyr")
 # load_all()
 list.files("R", full.names = T) %>% map(source)
@@ -25,12 +26,17 @@ a <- v("a", .f = rlang::as_function(~ 1))
 b <- v("b", .f = rlang::as_function(~ 2))
 c <- v("c", .f = rlang::as_function(~ rsum(.x)))
 
-e1 <- e("e",.func = function(.value){.value})
+e1 <- e(name = "e",.func = function(.value){.value})
+
 
 d <- (a*e1 + b*e1)*c
 plot(d)
+d1 <- d %>% tidygraph::activate("edges") %>% mutate(.attrs = list(name = "e"))
+diagram(d1)
 d %>% activate("edges") %>% mutate(from_name = map_chr(from, ~ .N() %>% filter(row_number()==.x) %>% pull(name))) %>% 
   activate("nodes") %>% evaluate_prepare()  %>% evaluate_execute()
+
+
 
 result <- d %>% mutate(from_name) evaluate() %>% pull(eval_statement) %>% unlist()
 

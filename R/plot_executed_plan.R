@@ -9,11 +9,12 @@ plot_executed_plan <- function(comined){
    mutate(resources = resources %>% map(names)) %>%
     unnest(resources) %>%
     mutate(resources = resources %>% str_replace_all("_"," ") %>% str_to_sentence()) %>%
-    ggplot(aes(x = start_time, y = name, color = resources)) + 
-    geom_point(size = 5,alpha = .75) +
+    ggplot(aes(x = start_time, y = name, color = resources, fill = resources)) + 
+    geom_point(size = 3, shape = 22 ) +
+    # geom_line(size = 3, alpha = .75) +
     labs(y = NULL, x = "Time") + 
     theme_ipsum() +
-    ggtitle("Gantt Chart", "Weekend Plan") + 
+    ggtitle("Gantt Chart", "Data Strategy") + 
     theme(panel.grid.minor = element_line(colour="grey", size=0.5)) +
     theme(
           strip.text.x = element_blank(),

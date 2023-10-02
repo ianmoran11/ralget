@@ -84,6 +84,8 @@ suppressMessages(
   bound <- tidygraph::graph_join(v1,v2)
 )
 
+tidygraph::graph_join(v("test1"), v("test2"),keep = T)
+
 ## Create data frame of edges present after graph_join --- 
   bound_edge_tbl <-
     activate(bound,"edges") %>%
