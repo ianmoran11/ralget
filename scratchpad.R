@@ -5,11 +5,9 @@ library("devtools")
 library("DiagrammeR")
 devtools::document()
 devtools::install(".")
-
 library(ralget)
 
- load_all()
-
+# load_all()
 make_lemon_filling  <- v(name = "Make lemon filling")
 separate_egg  <- v(name = "Separate egg")
 make_meringue  <- v(name = "Make meringue")
@@ -40,15 +38,14 @@ meringue_recipe <-
   (fill_crust * unbaked_lemon_pie) +
   ((unbaked_lemon_pie + meringue) * add_meringue * unbaked_lemon_pie) 
 ) 
+
 meringue_recipe %>% diagram
 
 
-meringue_recipe %>% compact()
+meringue_recipe %>% compact() %>% diagram()
 
 
 class(meringue_recipe)
-meringue_recipe %>% print()
-meringue_recipe %>% print.ralget()
 
 g1 <- 
   (egg * separate_egg) +
@@ -72,21 +69,7 @@ list.print <- function(x){ list.tree(x)}
 g1 %>% pull(.waiting_edge_right) %>% list.tree()
 g2 %>% pull(.waiting_edge_left) %>% list.tree()
 
-
-
 install.packages("Hmisc")
-
-
-
-
-
-
-
-
-
-
-
-
 
 egg_step <-  (egg * separate_egg * (yolk +  white))
 
@@ -97,8 +80,6 @@ components <-
 assembly <- 
   ((meringue + unbaked_lemon_pie)* add_meringue * unbaked_pie) +
    ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)  
-
-
 
 a1 <-   ((meringue + unbaked_lemon_pie)* add_meringue * unbaked_pie) 
 a2 <- ((lemon_filling + prepared_crust) * fill_crust * unbaked_lemon_pie)  
@@ -120,11 +101,7 @@ s1 <- (egg_step + components)
 
 (s1 + assembly)  %>% diagram
 
-+ assembly) %>% diagram()
-
 (assembly + components) %>% diagram()
-diagram(graph)
-
 
 g2 <- 
 tidygraph::graph_join((e(name= "g1_to_g2") * v("g21") * e(name ="g2_to_g1")),(e(name= "gX_to_g2") * v("g22") * e(name= "g2_to_gX")))
@@ -196,22 +173,12 @@ tomato_sauce <- e(name= "tomato_sauce")
 ) %>% diagram
 
 
-
-
 make_white_sauce <- 
 (((milk + onion + parsely_stalks + peppercorns + cloves + bay_leaves) * v("combine and simmine") * e("white suauce prem")) +
   (e("white suauce prem") + butter + flour + milk) * v("combine") * e("white sauce")) 
 
 layer_combonents <- 
   ((e("white sauce") + e("seasoned tomato sauce")) * v("layer") * e("unbaked lasange"))
-
-(make_tomato_sauce + (make_white_sauce + layer_combonents)) %>% diagram
-
-
-
-
-
-
 
 # load_all()
 
@@ -244,31 +211,8 @@ recipe <-
 (fill_crust * unbaked_lemon_pie) +
 ((unbaked_lemon_pie + meringue) * add_meringue * unbaked_lemon_pie) 
 
-as_tibble(recipe) %>% pull(.waiting_edge_left) %>% map(class)
 
 recipe %>% compact()
 
-
-
-
-  # mutate(.waiting_edge_left = map_if(.waiting_edge_left ,is.character,~ e(name = .x))) %>% 
-  # mutate(.waiting_edge_right = map_if(.waiting_edgekkk_right ,is.character,~ e(name = .x)))
-
-
-  
- as_tibble(recipe) %>% mutate(row_now = row_number()) %>% pull(.waiting_edge_left) %>% 
-   keep(~ !is.null(.)) %>% reduce(`+`)
-
-
- 
 ( e("one") + e("two") ) + (e("three") + e("four"))
   
-  
-  
-  
-  
-
-
-
-
-

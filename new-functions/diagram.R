@@ -7,7 +7,6 @@
 #' @export
 
 diagram <- function(graph){
-
 # library(ralget) 
 # library(tidyverse)
 # library(tidygraph)
@@ -46,22 +45,15 @@ diagram <- function(graph){
 
 # Get nodes --------------------
 
-# browser()
+browser()
 # nodes <- edge_df %>% pull(node_list)  %>% map(~ .x[-2]) %>% unlist() %>% unique()
+func  <- function(x){2*x}
+
 
 internode_joins <- tibble(from = NA_character_, edge_name = NA_character_, to = NA_character_) %>% filter(F)
 if(graph %>% activate("edges") %>% as_tibble() %>% nrow() %>% `>`(0)){
-  edge_df <- 
-    graph %>% 
-    activate("edges") %>% get_edge_names() %>% 
-    mutate(node_list = pmap(list(from_name, .attrs, to_name), ~ 
-                              list(from = ..1, edge_name = unlist(..2),to = ..3))) 
-  
-  internode_joins <- 
-    edge_df %>% pull(node_list) %>% 
-    map( ~ .x %>% keep(~ !is.null(.x)))  %>% 
-    map(~ as_tibble(.x)) %>% 
-    bind_rows()
+  edge_df <- graph %>% activate("edges") %>% get_edge_names() %>% mutate(node_list = pmap(list(from_name, .attrs, to_name), ~ list(..1,unlist(..2),..3))) 
+  internode_joins <- edge_df %>% pull(node_list) %>% map( ~ .x %>% keep(~ !is.null(.x)))  %>% map(~ .x %>% as.list %>% as.data.frame(.x)) %>% map(~ .x %>% set_names(c("from","edge_name","to"))) %>% map_df(as_tibble)
 }
 
 dot_in <- tibble(from = NA_character_, edge_name = NA_character_, to = NA_character_) %>% filter(F)

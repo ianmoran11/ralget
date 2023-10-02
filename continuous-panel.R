@@ -1,5 +1,5 @@
+rm(list = ls())
 library(devtools)
-install("../raldag")
 library("tidyverse")
 library("ggdag")
 library("tidygraph")
@@ -16,11 +16,33 @@ library("stringi")
 library("purrr")
 library(tidyverse)
 conflict_prefer("filter", "dplyr")
-load_all()
-load_all("../raldag")
+# load_all()
+list.files("R", full.names = T) %>% map(source)
 
 logit <- function(...)
 
+a <- v("a", .f = rlang::as_function(~ 1))
+b <- v("b", .f = rlang::as_function(~ 2))
+c <- v("c", .f = rlang::as_function(~ rsum(.x)))
+
+e1 <- e("e",.func = function(.value){.value})
+
+d <- (a*e1 + b*e1)*c
+plot(d)
+d %>% activate("edges") %>% mutate(from_name = map_chr(from, ~ .N() %>% filter(row_number()==.x) %>% pull(name))) %>% 
+  activate("nodes") %>% evaluate_prepare()  %>% evaluate_execute()
+
+result <- d %>% mutate(from_name) evaluate() %>% pull(eval_statement) %>% unlist()
+
+expect_true(all(result == c(1,2,1)))
+  
+ v(1,1) * e(1,1) * v(2, function(...) sum(...))
+  
+  
+  
+ ralget::evaluate() 
+  
+  
 z <- v("z", .f = d(~ rnorm(n = 10, mean =  rsum(.x), sd = 0)))
 x <- v("x", .f = d(~ rnorm(n = 10, mean =  rsum(.x), sd = 0)))
 y <- v("y", .f = d(~ rnorm(n = 10, mean =  rsum(.x), sd = 0)))
@@ -41,6 +63,8 @@ t <-
 (t3 * b(1) * t4) +
 (t4 * b(1) * t5)
 
+print(t) %>% tidygraph::as.igraph() %>% plot()
+plot(g)
 
 xt <- cartesian_product(g,t,node_combine =  ~ c(.x), edge_combine =  ~ c(.x,.y))
 

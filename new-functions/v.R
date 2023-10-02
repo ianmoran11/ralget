@@ -8,7 +8,7 @@
 v <- function(name, ...){
   # browser()
 
-  v <- tidygraph::create_path(1) %>% activate("nodes") %>%
+  v <- tidygraph::create_path(1, directed = T) %>% activate("nodes") %>%
     mutate(name = name) %>%
     mutate(.attrs = ifelse(length(list(...)) ==0, list(),list(list(...))))
 

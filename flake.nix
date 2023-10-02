@@ -33,6 +33,7 @@
               dagitty
               ggforce
               conflicted
+              hrbrthemes
               ggdag
               microbenchmark
               DiagrammeR
