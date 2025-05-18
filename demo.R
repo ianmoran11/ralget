@@ -5,11 +5,8 @@ document()
 install()
 test()
 check()
-usethis::use_pkgdown()
 library(usethis)
-load_all()
-usethis::use_pkgdown_github_pages()
-install.packages("datapasta")
+library("datapasta")
 library(tidyverse)
 library(tidygraph)
 library(ggraph)
@@ -18,13 +15,21 @@ library(patchwork)
 library(igraph)
 library(ggdag)
 library(magrittr)
-library(ralget)
+# library(ralget)
+library(devtools)
 load_all()
 # Test ----------------------------------------------------
 circle <- v("a") * (v("b") * e("test attrs") * v("c"))
-line <- v("1")*v("2")*v("3")
+line <- v("1")*v("2") + v("2")*v("3")
+
+plot(circle)
+plot(line)
 
 class(e(1)+ e(2))
+class(line)
+plot(e(1)+ e(2))
+
+
 
 e_r1 <- v("two") * ((e("one")+ e("two")))
 e_r <-  (v("two") ) * ((e("one")+ e("two")))
@@ -37,15 +42,12 @@ ds <-
 dsd <- v("vhun")*ds
 plot(dsd)
 
-
 (e_r1 * circle) %>% activate("edges") %>% as_tibble() %>% print(n = Inf)
 
 plot(e_r1 * circle)
 
 
 e_r11 <- e_r1 * v("one")
-
-
 
 
 e_r1 * v("two")
@@ -68,6 +70,9 @@ a <- v("a")
 b <- v("b")
 c <- v("c")
 d <- v("d")
+m <- v("m")
+x <- v("x")
+y <- v("y")
 
 g <-
   (a * b(9) + m * b(1)) * x +
@@ -75,7 +80,6 @@ g <-
   (a * b(3) + c * b(5)) * m
 
 g %>% evaluate_prepare() %>% evaluate_execute()
-
 
 h <- (m * b(2) + x * b(1)) * y
 h %>% evaluate_prepare() %>% evaluate_execute()

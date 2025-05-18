@@ -6,7 +6,7 @@
 #' @return ralget
 #' @export
 
-diagram <- function(graph){
+diagram <- function(graph,text_only =F){
 
 # library(ralget) 
 # library(tidyverse)
@@ -84,7 +84,10 @@ paste0("\ndigraph rmarkdown{\nrankdir = TB\nnode [ shape = box , fontname = Aria
 
 # diagram_txt %>% cat()
 
+if(text_only){
+  return(diagram_txt)
+}
+
 diagram_txt %>% DiagrammeR::grViz()
-  
-  
+
 }

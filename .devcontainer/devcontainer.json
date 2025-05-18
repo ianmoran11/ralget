@@ -1,0 +1,54 @@
+{
+    "name": "R Dev Environment with System Dependencies",
+    
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+  
+    "workspaceFolder": "/workspaces/ralget-merge",
+  
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ralget-merge,type=bind,consistency=cached",
+  
+    "features": {
+        "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+            "packages": [
+                "covr", 
+                "d3r", 
+                "devtools", 
+                "DiagrammeR", 
+                "d3r",
+                "forcats",
+                "ggraph", 
+                "Hmisc", 
+                "igraph", 
+                "jsonlite",
+                "knitr", 
+                "magrittr", 
+                "patchwork",
+                "reprex", 
+                "rlang", 
+                "rmarkdown", 
+                "stringr", 
+                "testthat", 
+                "tibble", 
+                "tidygraph", 
+                "tidyverse"
+            ]
+        }
+    },
+  
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "REditorSupport.r",
+                "quarto.quarto"
+            ],
+            "settings": {
+                "r.rpath.mac": "/usr/local/bin/R"
+            }
+        }
+    },
+  
+    "postCreateCommand": "echo 'Container ready!'"
+  }

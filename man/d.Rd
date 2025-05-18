@@ -4,7 +4,7 @@
 \alias{d}
 \title{Specify a data generating process}
 \usage{
-d(x, env = caller_env())
+d(x, env = global_env(), ..., arg = caller_arg(x), call = caller_env())
 }
 \arguments{
 \item{x}{ralget}

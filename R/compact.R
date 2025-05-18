@@ -6,14 +6,26 @@
 #' @export
 #' 
 compact <- function(graph){
-  
   # browser()
   if(!(".attrs" %in% names(as_tibble(graph)))){
-    graph <- graph %>% mutate(.attrs = map(row_number, ~ list(NULL)))
+    graph <- graph %>% mutate(.attrs = map(row_number(), ~ list(NULL)))
   }
-  
- # ?summarise 
-  
+
+  if(!(".waiting_edge_right" %in% names(as_tibble(graph)))){
+    graph <- graph %>% mutate(.waiting_edge_right = map(row_number(), ~ list(NULL)))
+  }
+
+
+  if(!(".waiting_edge_left" %in% names(as_tibble(graph)))){
+    graph <- graph %>% mutate(.waiting_edge_left = map(row_number(), ~ list(NULL)))
+  }
+
+
+
+  graph <-  graph %>% activate("nodes")
+
+
+
   node_df <- 
   as_tibble(graph) %>% mutate(row_now = row_number()) %>% 
     group_by(name) %>% 

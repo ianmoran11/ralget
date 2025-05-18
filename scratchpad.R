@@ -1,13 +1,33 @@
 rm(list = ls())
-library("tidyverse")
-library("tidygraph")
-library("devtools")
-library("DiagrammeR")
+
+library(devtools)
 devtools::document()
 devtools::install(".")
 library(ralget)
 
-# load_all()
+library(jsonlite)
+library(tidyverse)
+library(igraph)
+library(tidygraph)
+library(DiagrammeR)
+
+library(reprex)
+library(d3r)
+library(Hmisc)
+
+load_all()
+
+load_package_silent("ralget")
+
+file.remove("llm-guide_reprex.R")
+file.remove("llm-guide_reprex.md")
+reprex(input = "llm-guide.R")
+
+.libPaths()
+remove.packages("ralget", lib="/usr/local/lib/R/site-library")
+remove.packages("ralget", lib="/usr/local/lib/R/library")
+
+
 make_lemon_filling  <- v(name = "Make lemon filling")
 separate_egg  <- v(name = "Separate egg")
 make_meringue  <- v(name = "Make meringue")
@@ -26,6 +46,15 @@ meringue <- e(name = "Meringue")
 unbaked_lemon_pie <- e(name = "Unbaked lemon pie")
 unbaked_pie <- e(name = "Unbaked pie")
 
+
+t <- 
+(e("we1")*v("L")*e("e")*v("R")) +
+(v("L")*e("e")*v("R") *e("we2"))
+
+t %>% diagram()
+
+t %>% as_tibble() %>% pull(.waiting_edge_right)
+
 meringue_recipe <- 
 (
   (egg * separate_egg)  +
@@ -40,12 +69,12 @@ meringue_recipe <-
 ) 
 
 meringue_recipe %>% diagram
+ralget::compact()
+meringue_recipe %>% ralget::compact() %>% diagram()
 
+#as.igraph() %>% 
+meringue_recipe %>% to_json()
 
-meringue_recipe %>% compact() %>% diagram()
-
-
-class(meringue_recipe)
 
 g1 <- 
   (egg * separate_egg) +
@@ -63,13 +92,13 @@ g1 %>% diagram
 g2 %>% diagram  
 (g1 + g2) %>% diagram
 
+
+library("Hmisc")
 print.list <- function(x){ list.tree(x)}
 list.print <- function(x){ list.tree(x)}
 
 g1 %>% pull(.waiting_edge_right) %>% list.tree()
 g2 %>% pull(.waiting_edge_left) %>% list.tree()
-
-install.packages("Hmisc")
 
 egg_step <-  (egg * separate_egg * (yolk +  white))
 
@@ -137,7 +166,6 @@ vr_e <- (rvleo1 + rvleo2 + lvres1rvles1 + lvres2rvles2) * vr * (rvreo1 + rvreo2 
 
 diagram(vl_e + vr_e)
 
-vl_e + vr_e
 
 oil            <- e(name = "oil")
 onion          <- e(name = "onion")
@@ -215,4 +243,243 @@ recipe <-
 recipe %>% compact()
 
 ( e("one") + e("two") ) + (e("three") + e("four"))
-  
+
+
+## Petri net 
+### States
+S <- v("S")
+I <- v("I")
+R <- v("R")
+
+### Transitions
+i <- v("infection")
+r <- v("recovery")
+
+rn <- \(x) paste0(sample(letters, 5, replace = TRUE), collapse = "")
+
+SIR <-
+ S * e("Si") * i  +
+ i * e("iI") * I + 
+ I * e("Ii(1)") * i +
+ I * e("Ir") * r  +
+ r * e("rR") * R  + 
+ i * e("iI(2)") * I
+
+D <- v("D")
+d <- v("death")
+
+D <- 
+ I * e("Id") * d +
+ d * e("dD") * D
+
+plot(D)
+diagram(D)
+
+SIRD <- SIR + D
+
+POP <- v("I") + v("NI") 
+
+
+SIR + SIR
+
+
+ (POP %x% SIR)
+
+
+plot(SIRD)
+diagram(SIRD)
+
+
+
+
+
+
+
+
+ID <- 
+
+ I * e("Ii(1)") * i +
+
+
+
+
+plot(SIR)
+diagram(SIR)
+ 
+SIR %>% print(n = Inf)
+
+
+
+
+ * I) + (I * e("recover") * R)
+
+plot(SIR)
+
+diagram(SIR %x% SIR)
+
+
+ralget::cartesian_product()
+
+
+
+
+POP <- v("POP", species = "place", type = "blue") 
+S   <- v("S",   species = "place", type = "blue") 
+I   <- v("I",   species = "place", type = "blue") 
+R   <- v("R",   species = "place", type = "blue") 
+
+S_id <- v("S_id", species = "transition", type = "green") 
+I_id <- v("I_id", species = "transition", type = "green") 
+R_id <- v("R_id", species = "transition", type = "green") 
+
+infecting  <- v("infecting",  species = "transition", type = "purple") 
+recovering <- v("recovering", species = "transition", type = "yellow") 
+
+ids <- 
+S * e() * S_id +
+I * e() * I_id +
+R * e() * R_id + 
+S_id * e() * S +
+I_id * e() * I +
+R_id * e() * R 
+
+# Infectiono 
+infection_gph <- 
+S * e() * infecting +
+I * e() * infecting +
+infecting * (e() + e()) * I 
+
+# Reconvery
+recovery_gph <- 
+(I * e() * recovering) +  (recovering * e() * R)
+
+
+ll <- ids + infection_gph + recovery_gph
+
+ll %>%  
+mutate(colors = map_chr(.attrs, "type")) %>%
+ggraph() + 
+  geom_edge_link(arrow = arrow(length = unit(5, 'mm')), 
+                 end_cap = circle(12, 'mm')) + 
+  geom_node_label(aes(label = name, fill = colors),size = 10) +
+  NULL
+
+
+
+
+
+Q        <- v("Q",        species = "place",      type = "blue") 
+nQ       <- v("nQ",       species = "place",      type = "blue") 
+
+Q_id     <- v("Q_id",     species = "transition", type = "yellow") 
+nQ_id    <- v("nQ_id",    species = "transition", type = "yellow") 
+
+
+move_qnq <- v("move_qnq", species = "transition", type = "green")
+move_nqq <- v("move_nqq", species = "transition", type = "green")
+
+
+infect_nq <- v("infect_nq", species = "transition", type = "purple")
+
+quarantine <- 
+Q * e() * Q_id +
+Q_id * e() * Q +
+nQ * e() * nQ_id +
+nQ_id * e() * nQ
+
+tranisitions <- 
+Q * e() * move_qnq +
+move_qnq * e() * nQ +
+nQ * e() * move_nqq +  
+move_nqq * e() * Q +
+nQ * (e() + e()) * infect_nq +
+infect_nq *(e() + e()) * nQ
+
+
+diagram(quarantine + tranisitions)
+
+ur <-  quarantine + tranisitions
+
+ur %>%  
+mutate(colors = map_chr(.attrs, "type")) %>%
+ggraph() + 
+  geom_edge_link(arrow = arrow(length = unit(5, 'mm')), 
+                 end_cap = circle(12, 'mm')) + 
+  geom_node_label(aes(label = name, fill = colors),size = 10) +
+  NULL
+
+
+
+
+
+
+ur_df <- 
+tibble(
+ur_name = pull(as_tibble(ur),name),
+ur_type = map_chr(pull(as_tibble(ur),.attrs),"type"),
+ur_species = map_chr(pull(as_tibble(ur),.attrs),"species"),
+joiner = 1
+ )
+
+
+
+
+
+ll_df <- 
+tibble(
+ll_name = pull(as_tibble(ll),name),
+ll_type = map_chr(pull(as_tibble(ll),.attrs),"type"),
+ll_species = map_chr(pull(as_tibble(ll),.attrs),"species"),
+joiner = 1
+)
+
+
+j_df <- full_join(ur_df,ll_df, by = "joiner") 
+
+
+ll_edges_df = activate(ll, "edges") %>% ralget::get_edge_names() %>% as_tibble() %>% select(ll_from = from_name, ll_to = to_name) %>% mutate(ll_edge = 1)
+ur_edges_df = activate(ur, "edges") %>% ralget::get_edge_names() %>% as_tibble() %>% select(ur_from = from_name, ur_to = to_name) %>% mutate(ur_edge = 1)
+
+ll_edges_df
+ur_edges_df 
+
+ul_nodes = j_df %>% filter(ur_type == ll_type)  %>% mutate(ul_name = paste(ur_name, ll_name, sep = "|"))
+
+edge_candidates =
+  tidyr::crossing(from = pull(ul_nodes, ul_name),  to = pull(ul_nodes, ul_name)) %>% 
+  mutate(ur_from = str_extract(from,"^.+\\|") %>% str_remove("\\|")) %>%
+  mutate(ur_to = str_extract(to,"^.+\\|") %>% str_remove("\\|")) %>%
+  mutate(ll_from = str_extract(from,"\\|.+$") %>% str_remove("\\|")) %>%
+  mutate(ll_to = str_extract(to,"\\|.+$") %>% str_remove("\\|"))
+
+ul_edges <-      
+  edge_candidates %>%
+  left_join(ll_edges_df, by = c("ll_from", "ll_to"))  %>%
+  left_join(ur_edges_df, by = c("ur_from", "ur_to"))  %>%
+  filter(!is.na(ll_edge) & !is.na(ur_edge))
+
+
+library(ggraph)
+
+ul_gph <- 
+tidygraph::as_tbl_graph(ul_edges %>% select(from,to), directed = T) 
+
+install.packages("patchwork")
+library(patchwork)
+
+ul_plot <- 
+ul_gph %>%
+left_join(ul_nodes %>% select(name = ul_name, type = ur_type)) %>%
+mutate(name = "") %>%
+#mutate(colors = map_chr(.attrs, "type")) %>%
+ggraph() + 
+  geom_edge_link(arrow = arrow(length = unit(5, 'mm')), 
+                 end_cap = circle(5, 'mm')) + 
+  geom_node_label(aes(label = name , fill = type),size = 10) +
+  NULL
+
+
+
+
+pull(as_tibble(ll),name)
+
